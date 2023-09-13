@@ -1,0 +1,2086 @@
+<!DOCTYPE html>	<!-- ver 1.0 - Todo: Bootstrap graphics + guide section  -->
+<html>
+	<head>
+		<script>
+			//Github info - Insert your info here. DON'T SHARE THIS FILE WITH YOUR API_TOKEN. Delete it first. (If you didn't, delete it form https://github.com/settings/tokens )
+			const API_TOKEN = "YOUR_TOKEN_HERE";			//example: const API_TOKEN = "qwertyuiop1234567890";
+			const OWNER = "YOUR_USERNAME_HERE";				//example: const OWNER = "F-l-a";
+			const REPO = "YOUR_REPOSITORY_NAME_HERE";		//example: const REPO = "FlaSwitch";
+			const FILE_PATH = "YOUR_VERSION_FILE_PATH_HERE";//example: const FILE_PATH = "Versioni.json";
+			var HASH;
+		</script>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		
+		
+		<script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.css"/>
+		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.css"/>
+		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.minimal.css">
+		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.compact.css">
+		<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css"">
+
+		<!-- commenti in style con /* commento */ -->		
+		<style>
+		
+			table {border-collapse: collapse; width: 100%;}
+			tr {border-bottom: 1px solid #ddd;}
+			tr:hover {background-color: #D6EEEE;}
+			th, td {
+			  padding: 8px;
+			}
+			th, caption{background-color:lavender;}
+			div.strutturaTabella{border:1px solid #ddd;margin-bottom:10px;}
+			a:link {text-decoration: none;}
+			a:visited {text-decoration: none;}
+			a:hover {text-decoration: underline;}
+			a:active {text-decoration: underline;}
+			img {width:100%;display: block;margin: 0 auto;}
+			input{width:100%;display: block;margin: 0 auto; tabindex:-1}
+			p {margin: 5px;}
+			
+			/* custom abbr */
+			@media screen and (min-width: 0px) {
+				abbr[data-title] {
+					position: relative;
+
+					/* ensure consistent styling across browsers */
+					text-decoration: underline dotted;
+				}
+
+				abbr[data-title]:hover::after,
+				abbr[data-title]:focus::after {
+					content: attr(data-title);
+
+					/* position tooltip like the native one */
+					position: absolute;
+					right: 50px;
+					bottom: 15px;
+					width: auto;
+					white-space: nowrap;
+
+					/* style tooltip */
+					background-color: #1e1e1e;
+					color: #fff;
+					border-radius: 3px;
+					box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.4);
+					font-size: 14px;
+					padding: 3px 5px;
+				}
+			}
+			
+			
+			.iconaFlag{
+				width:50px;
+				height:50px;
+				border:none!important;
+				cursor:pointer;
+			}
+			
+			.tabellaDettagli{
+				font-family:'Consolas';
+				font-size:12px;
+				margin-top:5px;
+				margin-bottom:0px;
+			}
+			
+			.colonnaMinima{		/* applica uno stile 'Wrap-content' */
+				width:1px;
+				white-space:nowrap;
+			}
+			
+			
+			.rigaApp{		/* applica uno stile 'Wrap-content' */
+				height:1px;
+				white-space:nowrap;
+			}
+			
+			.fullImage{
+				width:100%;
+			}
+			
+			
+			.colonnaVersioni{
+				padding:0;
+				margin:0;
+				border-style:hidden!important;
+			}
+			
+			.iconaVersioni{
+				width:20px;
+				height:20px;
+				display:inline-block;
+			}
+			
+			.iconaModificaVersione{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/update.png");	/*alt: UPD	https://cdn-icons-png.flaticon.com/512/5278/5278646.png */
+				cursor:pointer;
+			}
+			
+			.iconaUltimaVersione{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/cloud.png");	/*alt: CLD	https://cdn-icons-png.flaticon.com/512/2377/2377385.png */
+			}
+			
+			.iconaVersioneInstallata{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/switch.webp");		/*alt: DEV	https://i.imgur.com/vhQZVr3_d.webp?maxwidth=760&fidelity=grand */
+			}
+			
+			.iconaAggiornamentoRichiesto{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/reconfig.png");		/*alt: REQ	https://cdn-icons-png.flaticon.com/512/7910/7910453.png */
+			}
+			
+			.iconaConfigurazioneRichiesta{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/file.png");		/*alt: CNF	https://cdn-icons-png.flaticon.com/512/6671/6671961.png */
+			}
+			
+			.iconaInfo{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/info.png");		/*alt: INF	https://img.icons8.com/?size=512&id=63308&format=png */
+			}
+			
+			.captionTabellaDettagli{
+				text-align:left;
+				padding-left:8px;
+			}
+			
+			.buttonMenu{
+				display:inline-block;
+				cursor:pointer;
+				border:none!important;
+				width:40px;
+				height:40px;
+				margin:0px;
+			}
+			
+			.iconaDiProva{
+			content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/save.png");				/* https://cdn-icons-png.flaticon.com/512/4856/4856668.png */
+			}
+			
+			#ExpandIconButtonImage{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/plus.png");			/* https://icons.veryicon.com/png/o/miscellaneous/conventional-use/add-expand-right-angle.png */
+			}
+			
+			#CollapseIconButtonImage{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/minus.png");		/* https://icons.veryicon.com/png/o/miscellaneous/conventional-use/right-angle.png */
+			}
+			
+			#IconaMostraVersioni{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/FileVersion.png");	/* https://cdn-icons-png.flaticon.com/512/5136/5136928.png */
+			}
+			
+			#IconaMostraLimiteAPI{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/api.png");			/* https://cdn-icons-png.flaticon.com/512/2165/2165022.png */
+			}
+			
+		</style>
+		
+	</head>
+	
+	<body><center>
+
+		<!-- LINKS -->
+		<div class="strutturaTabella">
+			<table style="width:100%" class="caption-top">
+				<caption style="text-align:center">SYSTEM</caption>
+				<tr style="text-align:center">
+					<td><a href="https://switchbrew.org/wiki/Title_list" target="_blank">TitleList System - SwitchBrew</a></td>
+					<td><a href="https://yls8.mtheall.com/ninupdates/titlelist.php?sys=hac" target="_blank">TitleList System - NinUpdates</a></td>
+					<td><a href="https://tinfoil.io/title/" target="_blank">TitleList Games - Tinfoil</a></td>
+					<td><a href="https://layoutdocs.themezer.net/" target="_blank">Theming Documentation - Themezer</a></td>
+				</tr>
+			</table>
+		</div>
+		
+		<h2>CFW LIST</h2>
+		<div class="strutturaTabella" style="border:none;">
+			<div class="strutturaTabella buttonMenu"><abbr onclick="aggiungiNotifica('default', 'NotificaProva', 'testo')" onkeydown="aggiungiNotifica('default', 'NotificaProva', 'testo', event)" data-title="IconaDiProva" tabindex="0"><img class="iconaDiProva" alt="IconaProva"></abbr></div>
+			<div class="strutturaTabella buttonMenu"><abbr data-title="Show Versions" tabindex="0" id="PulsanteMostraVersioni"><img id="IconaMostraVersioni" src="https://cdn-icons-png.flaticon.com/512/5136/5136928.png" alt="ShowVer"></abbr></div>
+			<div class="strutturaTabella buttonMenu"><abbr data-title="Show API Limits" tabindex="0" id="PulsanteMostraLimiteAPI"><img id="IconaMostraLimiteAPI" src="https://cdn-icons-png.flaticon.com/512/2165/2165022.png" alt="API Limits"></abbr></div>
+			<div class="strutturaTabella buttonMenu"><abbr onclick="mostraTutti(this.id)" onkeydown="mostraTutti(this.id, event)" id="ExpandIconButton" data-title="Expand-Collapse Tables" tabindex="0"><img id="ExpandIconButtonImage" alt="Expand All"></abbr></div>
+		</div>
+		
+		<!-- MAIN -->
+		<div class="strutturaTabella">
+			<table style="width:100%"  class="caption-top">
+				<caption style="text-align:center">MAIN</caption>
+				<!-- INTESTAZIONE -->
+				<tr>
+					<th style="width:10%">ICON</th>
+					<th style="width:20%">NAME - TITLEID</th>
+					<th style="width:50px">FLAGS</th>
+					<th>NOTES</th>
+				</tr>
+
+
+				<!-- HOS FIRMWARE NintendoHOSVersion -->
+				<tr class="RigaApp" id="NintendoHOSVersion">
+					<td><a href=""><img class="fullImage" src="https://upload.wikimedia.org/wikipedia/commons/8/8a/NintendoSwitchLogo.svg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://yls8.mtheall.com/ninupdates/titlelist.php?sys=hac&reg=G&tid=0100000000000816" target="_blank">Horizon OS</a></p>
+						<p style="font-family:'Consolas'">0100000000000816</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="NintendoHOSVersion_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('NintendoHOSVersion')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="NintendoHOSVersion_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="NintendoHOSVersion_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>
+						SYSTEM VERSION</br>
+						<a href="https://en-americas-support.nintendo.com/app/answers/detail/a_id/22525/~/nintendo-switch-system-update-information#current" target="_blank">View Changelog</a>
+					</td>
+				</tr>
+				
+				
+				<!-- ATMOSPHERE Atmosphere-NX/Atmosphere -->
+				<tr class="RigaApp" id="Atmosphere-NX/Atmosphere">
+					<td><a href=""><img class="fullImage" src="https://avatars.githubusercontent.com/u/37918415?s=200&v=4" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Atmosphere</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="Atmosphere-NX/Atmosphere_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('Atmosphere-NX/Atmosphere')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="Atmosphere-NX/Atmosphere_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="Atmosphere-NX/Atmosphere_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag"><abbr data-title="sigpatches" tabindex="0"><a href="https://sigmapatches.coomer.party" target="_blank"><img class="iconaAggiornamentoRichiesto" alt="!REQ!"></a></abbr></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('Atmosphere-NX/Atmosphere')" onkeydown="mostraDettagli('Atmosphere-NX/Atmosphere', event)" data-title="AntiBan + Extra Configuration" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						CUSTOM FIRMWARE
+						<div id='Atmosphere-NX/Atmosphere_TabellaDettagli' class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1JBVYKOee8FdMN6wRAypLhOIFYvT__2Er?usp=sharing" target="_blank">ATMOSPHERE</a></caption>
+								<td class="colonnaMinima">
+									/atmosphere/config/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPMANPafQGPISy4DtdCI/view?usp=share_link" target="_blank">override_config.ini</a><br>
+									/atmosphere/config/<a href="https://drive.google.com/file/d/1icTLLS2H8ogIqXrOQFdrQQ643eCYVnj9/view?usp=share_link" target="_blank">system_settings.ini</a><br>
+									/atmosphere/host/<a href="https://drive.google.com/file/d/1OX7KKA0YzL3UwJVMwWH95AtWsrvn7inG/view?usp=share_link" target="_blank">default.txt</a><br>
+									/<a href="https://drive.google.com/file/d/1mqAFVUTgqJSBYbGXrlFQt7setpONxMqW/view?usp=share_link" target="_blank">exosphere.ini</a>
+								</td>
+								<td>
+									: Override (for HBMenu forwarder)<br>
+									: CFW System Settings<br>
+									: Anti-ban (DNS MITM file for ATMOSPHERE emuMMC)<br>
+									: Anti-ban (Blanks ProdInfo)
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- HEKATE CTCaer/hekate -->
+				<tr class="RigaApp" id="CTCaer/hekate">
+					<td><a href=""><img class="fullImage" src="https://gbatemp.net/attachments/nyx-png.171766/" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/CTCaer/hekate" target="_blank">Hekate</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="CTCaer/hekate_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('CTCaer/hekate')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="CTCaer/hekate_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="CTCaer/hekate_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('CTCaer/hekate')" onkeydown="mostraDettagli('CTCaer/hekate',event)" data-title="Payloads + Boot Entries" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						CUSTOM BOOTLOADER
+						<div id="CTCaer/hekate_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1ceEu0C230z8wiALu5mg7TucqgJwjym_M?usp=share_link" target="_blank">HEKATE</a> (BOOTLOADER)</caption>
+								<td class="colonnaMinima">
+									/bootloader/ini/<a href="https://drive.google.com/file/d/1AQgh9hPa6io03eeKM9FOJYOjzEBfVlvl/view?usp=share_link" target="_blank">00-android.ini</a><br>
+									/bootloader/res/<a href="https://drive.google.com/file/d/1X72zFBHwEdKotvYyhGEnudKQrjKKKIfN/view?usp=share_link" target="_blank">emu_boot.bmp</a> + <a href="https://drive.google.com/file/d/1fqFLURxH2SNr2oBAgDHSXc81xYXO-OSO/view?usp=share_link" target="_blank">stock_boot.bmp</a><br>
+									/bootloader/<a href="https://drive.google.com/file/d/1TW0NMT7Bdz9ws5kYoHyRNXvzSZX7uh_i/view?usp=share_link" target="_blank">hekate_ipl.ini</a>
+								</td>
+								<td>
+									: Android boot entry<br>
+									: Custom boot entries icons<br>
+									: Bootloader boot entries and config
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- PAYLOADS -->
+				
+				<tr><th colspan="4" style="text-align:left;padding-left:15%;font-size:80%;cursor:pointer;" id="MostraDettagliPayloads" onclick="mostraPayloads(this.id)" onkeydown="mostraPayloads(this.id, event)" tabindex="0">&or; SHOW PAYLOADS &or;</th></tr>
+				<tr>
+					<table style="display:none;" id="dettagliPayloads_TabellaDettagli">
+
+						<!-- INTESTAZIONE -->
+						<tr>
+							<th style="width:10%">NAME</th>
+							<th style="width:20%">STATUS</th>
+							<th>PATH</th>
+							<th style="width:100%">NOTES</th>
+						</tr>
+
+						<!-- TEGRA EXPLORER suchmememanyskill/TegraExplorer -->
+						<tr class="RigaApp" id="suchmememanyskill/TegraExplorer">
+							<td><a href="https://github.com/suchmememanyskill/TegraExplorer" target="_blank">TegraExplorer</a></td>
+							<td>
+								<table style="width:100%">
+									<td class="colonnaVersioni colonnaMinima">
+										<p id="suchmememanyskill/TegraExplorer_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('suchmememanyskill/TegraExplorer')" alt="!UPD!"></p>
+									</td>
+									<td class="colonnaVersioni">
+										<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="suchmememanyskill/TegraExplorer_LatestVersion">?</span></p>
+										<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="suchmememanyskill/TegraExplorer_InstalledVersion">?</span></p>
+									</td>
+								</table>
+							</td>
+							<td>/bootloader/payloads/TegraExplorer.bin</td>
+							<td>: Payload-based file explorer --> <a href="#SyncFix">SyncFix.te script</a></td>
+						</tr>
+
+						<!-- LOCKPICK RCM shchmue/Lockpick_RCM -->
+						<tr class="RigaApp" id="shchmue/Lockpick_RCM">
+							<td><a href="https://github.com/shchmue/Lockpick_RCM" target="_blank">LockpickRCM</a></td>
+							<td>
+								<table style="width:100%">
+									<td class="colonnaVersioni colonnaMinima">
+										<p id="shchmue/Lockpick_RCM_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('shchmue/Lockpick_RCM')" alt="!UPD!"></p>
+									</td>
+									<td class="colonnaVersioni">
+										<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="shchmue/Lockpick_RCM_LatestVersion">?</span></p>
+										<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="shchmue/Lockpick_RCM_InstalledVersion">?</span></p>
+									</td>
+								</table>
+							</td>
+							<td>/bootloader/payloads/lockpickrcm.bin</td>
+							<td>: key Derivation Payload</td>
+						</tr>
+						
+						<!-- FUSEE Atmosphere-NX/Atmosphere -->
+						<tr class="RigaAppND" id="NoID">
+							<td><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">fusee.bin</a></td>
+							<td>
+								<table style="width:100%">
+									<td class="colonnaVersioni">
+										<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="LatestFusee">--</span></p>
+										<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="InstalledFusee">--</span></p>
+									</td>
+								</table>
+							</td>
+							<td>/bootloader/payloads/fusee.bin</td>
+							<td>: Atmosphere CFW payload (--><a href="#Atmosphere-NX/Atmosphere">Atmosphere</a>)</td>
+						</tr>
+					
+					
+					</table>
+				</tr>
+		
+			</table>
+		</div>
+		
+		<!-- HOMEBREW -->
+		<div class="strutturaTabella">
+			<table style="width:100%">
+				<caption>HOMEBREW</caption>
+				<!-- INTESTAZIONE -->
+				<tr>
+					<th style="width:10%">ICON</th>
+					<th style="width:20%">NAME - TITLEID</th>
+					<th style="width:50px">FLAGS</th>
+					<th>NOTES</th>
+				</tr>
+
+				<!-- FTPD CLASSIC + PRO mtheall/ftpd -->
+				<tr class="RigaApp" id="mtheall/ftpd">
+					<td><a href=""><img src="https://static.wiidatabase.de/ftpd-neu.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/mtheall/ftpd" target="_blank">FTPd classic + FTPd pro</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="mtheall/ftpd_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('mtheall/ftpd')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="mtheall/ftpd_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="mtheall/ftpd_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>FTP SERVER</td>
+				</tr>
+
+				<!-- JKSV J-D-K/JKSV -->
+				<tr class="RigaApp" id="J-D-K/JKSV">
+					<td><a href=""><img src="https://raw.githubusercontent.com/J-D-K/JKSV/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/J-D-K/JKSV" target="_blank">JKSV</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="J-D-K/JKSV_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('J-D-K/JKSV')" alt="!UPD!"></p>
+								</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="J-D-K/JKSV_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="J-D-K/JKSV_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('J-D-K/JKSV')" onkeydown="mostraDettagli('J-D-K/JKSV', event)" data-title="Save Files" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						SAVE MANAGER
+						<div id="J-D-K/JKSV_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1KBAo5_qmYY2dMyULblmcvP8dUKpU4cWv?usp=sharing" target="_blank">JKSV</a></caption>
+								<td class="colonnaMinima">
+									/config/JKSV/<a href="https://drive.google.com/file/d/1xYhopBxjC3-6zbCrEFvrmin6cpT9IPfc/view?usp=share_link" target="_blank">JKSV.cfg</a><br>
+									/<a href="https://drive.google.com/drive/folders/12NgpsB73Nm0-R8FmtBQMtvINxKyRfh5i?usp=share_link" target="_blank">JKSV</a>/<br>
+								</td>
+								<td>
+									: App custom settings<br>
+									: Save Files (13-04-2023)<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- TINFOIL blawar/tinfoil -->
+				<tr class="RigaAppND" id="blawar/tinfoil">
+					<td><a href=""><img src="https://i.imgur.com/Brp1KRx.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://tinfoil.io/Download" target="_blank">Tinfoil</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="blawar/tinfoil_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('blawar/tinfoil')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="blawar/tinfoil__LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="blawar/tinfoil_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('blawar/tinfoil')" onkeydown="mostraDettagli('blawar/tinfoil', event)" data-title="Configuration + Theme" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						ONLINE TITLE DOWNLOADER - MANAGER
+						<div id="blawar/tinfoil_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1dYVcEXdnGg7oOIgFqpk5Up9n8Euvr4XX?usp=share_link" target="_blank">TINFOIL</a></caption>
+								<td class="colonnaMinima">
+									/switch/tinfoil/<a href="https://drive.google.com/file/d/1GT75s3bU-ruC2NcJ7kayvSBrBlGtb998/view?usp=share_link" target="_blank">credentials.json</a> + <a href="https://drive.google.com/file/d/1r9eAWljGgfE0H2mwfu6_bcZN41wOndPF/view?usp=share_link" target="_blank">gdrive.token</a><br>
+									/switch/tinfoil/<a href="https://drive.google.com/file/d/1pz3f1ZVTmKudUDLdDOuFSRbu0WD2M45g/view?usp=share_link" target="_blank">locations.conf</a><br>
+									/switch/tinfoil/<a href="https://drive.google.com/file/d/1GUjTITuiBOfaTl2W28OZhEnrQHsgcQ7w/view?usp=share_link" target="_blank">options.json</a><br>
+									/switch/tinfoil/<a href="https://drive.google.com/drive/folders/1mvULPNn6FkTqI9YMloHDiAqdTGmGqxT_?usp=share_link" target="_blank">themes</a>/<br>
+								</td>
+								<td>
+									: &#128274;Google Drive Access Configuration<br>
+									: Shops List<br>
+									: &#128274;Application Settings<br>
+									: Tinfoil Theme Folder<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- AWOO INSTALLER Huntereb/Awoo-Installer -->
+				<tr class="RigaApp" id="Huntereb/Awoo-Installer">
+					<td><a href=""><img src="https://raw.githubusercontent.com/Huntereb/Awoo-Installer/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Huntereb/Awoo-Installer" target="_blank">Awoo Installer</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="Huntereb/Awoo-Installer_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('Huntereb/Awoo-Installer')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="Huntereb/Awoo-Installer_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="Huntereb/Awoo-Installer_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>TITLE INSTALLER</td>
+				</tr>
+
+				<!-- DBI rashevskyv/dbi -->
+				<tr class="RigaApp" id="rashevskyv/dbi">
+					<td><a href=""><img src="https://static.wiidatabase.de/DBI.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/rashevskyv/dbi" target="_blank">DBI</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="rashevskyv/dbi_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('rashevskyv/dbi')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="rashevskyv/dbi_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="rashevskyv/dbi_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>TITLE INSTALLER</td>
+				</tr>
+
+				<!-- GOLDLEAF XorTroll/Goldleaf -->
+				<tr class="RigaApp" id="XorTroll/Goldleaf">
+					<td><a href=""><img src="https://raw.githubusercontent.com/XorTroll/Goldleaf/master/Goldleaf/Goldleaf.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/XorTroll/Goldleaf" target="_blank">Goldleaf</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="XorTroll/Goldleaf_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('XorTroll/Goldleaf')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="XorTroll/Goldleaf_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="XorTroll/Goldleaf_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>TITLE INSTALLER</td>
+				</tr>
+
+				<!-- NX-SHELL joel16/NX-Shell -->
+				<tr class="RigaApp" id="joel16/NX-Shell">
+					<td><a href=""><img src="https://raw.githubusercontent.com/joel16/NX-Shell/next-opengl3/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/joel16/NX-Shell" target="_blank">NX-Shell</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="joel16/NX-Shell_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('joel16/NX-Shell')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="joel16/NX-Shell_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="joel16/NX-Shell_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>FILE MANAGER</td>
+				</tr>
+
+				<!-- VGEDIT.NRO vgmoose/vgedit -->
+				<tr class="RigaApp" id="vgmoose/vgedit">
+					<td><a href=""><img src="https://raw.githubusercontent.com/vgmoose/vgedit/main/assets/icon.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/vgmoose/vgedit" target="_blank">vgedit.nro</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="vgmoose/vgedit_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('vgmoose/vgedit')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="vgmoose/vgedit_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="vgmoose/vgedit_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>FILE MANAGER (simpler) + TEXT EDITOR</td>
+				</tr>
+
+				<!-- NX ACTIVITY LOG tallbl0nde/NX-Activity-Log -->
+				<tr class="RigaApp" id="tallbl0nde/NX-Activity-Log">
+					<td><a href=""><img src="https://raw.githubusercontent.com/tallbl0nde/NX-Activity-Log/master/Application/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/tallbl0nde/NX-Activity-Log" target="_blank">NX Activity Log</a></p>
+						<p style="font-family:'Consolas'">0100000000001013</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="tallbl0nde/NX-Activity-Log_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('tallbl0nde/NX-Activity-Log')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="tallbl0nde/NX-Activity-Log_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="tallbl0nde/NX-Activity-Log_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('tallbl0nde/NX-Activity-Log')" onkeydown="mostraDettagli('tallbl0nde/NX-Activity-Log', event)" data-title="App Config + Theme" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						DETAILED PLAY ACTIVITY (installed version is 1.5 from <a href="https://github.com/zdm65477730/NX-Activity-Log">here</a>)
+						<div id="tallbl0nde/NX-Activity-Log_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1heXPNDHicbPCeMSxyXAiC-rBVDCXRYXO?usp=share_link" target="_blank">NX ACTIVITY LOG</a></caption>
+								<td class="colonnaMinima">
+									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1cEwwv3Dg5eIzeLgclL0npG5XA_JUpxv1/view?usp=share_link" target="_blank">background.png</a><br>
+									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1BG8v3j-3UaQvFN2Hq7IQ2rnZYODWL5UG/view?usp=share_link" target="_blank">config.ini</a><br>
+									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1TzhC0QpZcEHL5Ym_U0TqX0__eBfRqGIR/view?usp=share_link" target="_blank">theme.ini</a><br>
+								</td>
+								<td>
+									: Background Image<br>
+									: Application Settings<br>
+									: Application Theme<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- HB APP STORE fortheusers/hb-appstore -->
+				<tr class="RigaApp" id="fortheusers/hb-appstore">
+					<td><a href=""><img src="https://fortheusers.org/img/appstorenx.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/fortheusers/hb-appstore" target="_blank">HB App Store</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="fortheusers/hb-appstore_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('fortheusers/hb-appstore')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="fortheusers/hb-appstore_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="fortheusers/hb-appstore_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>HOMEBREW STORE</td>
+				</tr>
+
+				<!-- 90DNS TESTER meganukebmp/Switch_90DNS_tester -->
+				<tr class="RigaApp" id="meganukebmp/Switch_90DNS_tester">
+					<td><a href=""><img src="https://raw.githubusercontent.com/meganukebmp/Switch_90DNS_tester/master/appicon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/meganukebmp/Switch_90DNS_tester" target="_blank">90DNS Tester</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="meganukebmp/Switch_90DNS_tester_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('meganukebmp/Switch_90DNS_tester')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="meganukebmp/Switch_90DNS_tester_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="meganukebmp/Switch_90DNS_tester_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>TEST NINTENDO SERVER CONNECTION</td>
+				</tr>
+
+				<!-- HEKATE TOOLBOX WerWolv/Hekate-Toolbox -->
+				<tr class="RigaApp" id="WerWolv/Hekate-Toolbox">
+					<td><a href=""><img src="https://raw.githubusercontent.com/WerWolv/Hekate-Toolbox/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/WerWolv/Hekate-Toolbox" target="_blank">Hekate Toolbox</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="WerWolv/Hekate-Toolbox_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('WerWolv/Hekate-Toolbox')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="WerWolv/Hekate-Toolbox_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="WerWolv/Hekate-Toolbox_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>MULTIPURPOSE TOOLBOX</td>
+				</tr>
+
+				<!-- NX GALLERY iUltimateLP/NXGallery -->
+				<tr class="RigaApp" id="iUltimateLP/NXGallery">
+					<td><a href=""><img src="https://raw.githubusercontent.com/iUltimateLP/NXGallery/master/app/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/iUltimateLP/NXGallery" target="_blank">NXGallery</a></p>
+						<p style="font-family:'Consolas'">010000000000100D</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="iUltimateLP/NXGallery_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('iUltimateLP/NXGallery')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="iUltimateLP/NXGallery_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="iUltimateLP/NXGallery_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('iUltimateLP/NXGallery')" onkeydown="mostraDettagli('iUltimateLP/NXGallery', event)" data-title="Album Applet" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						SWITCH-LAN SCREENSHOT TRANSFER TOOL
+						<div id="iUltimateLP/NXGallery_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/10P2B1zwQK7cxTJXY7IdCvQ_sF4AvfNoT?usp=share_link" target="_blank">NX GALLERY</a></caption>
+								<td class="colonnaMinima">
+									/atmosphere/contents/010000000000100D/<a href="https://drive.google.com/file/d/13d4mR4sycLcpkC0vGV2MhtWUnkGP7yNp/view?usp=share_link" target="_blank">exefs.nsp</a><br>
+								</td>
+								<td>
+									: exefs file (replace ALBUM APPLET)<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- SHARE NX HookedBehemoth/ShareNX -->
+				<tr class="RigaApp" id="HookedBehemoth/ShareNX">
+					<td><a href=""><img src="https://raw.githubusercontent.com/HookedBehemoth/ShareNX/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/HookedBehemoth/ShareNX" target="_blank">ShareNX</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="HookedBehemoth/ShareNX_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('HookedBehemoth/ShareNX')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="HookedBehemoth/ShareNX_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="HookedBehemoth/ShareNX_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>GALLERY (SCREENSHOT UPLOADER)</td>
+				</tr>
+
+				<!-- NX THEMES INSTALLER exelix11/SwitchThemeInjector -->
+				<tr class="RigaApp" id="exelix11/SwitchThemeInjector">
+					<td><a href=""><img src="https://b.thumbs.redditmedia.com/t5KcHDVXIANHWNyFPWydRbH__sWjpqsoFemjUf92Vrs.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/exelix11/SwitchThemeInjector" target="_blank">NX Themes Installer</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="exelix11/SwitchThemeInjector_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('exelix11/SwitchThemeInjector')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="exelix11/SwitchThemeInjector_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="exelix11/SwitchThemeInjector_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('exelix11/SwitchThemeInjector')" onkeydown="mostraDettagli('exelix11/SwitchThemeInjector', event)" data-title="Themes folder" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						THEMES INSTALLER
+						<div id="exelix11/SwitchThemeInjector_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1IGK1PJqYdfXBWR43eTgecgAYK-kPSIgU?usp=share_link" target="_blank">NX THEMES INSTALLER</a></caption>
+								<td class="colonnaMinima">
+									/themes/ThemezerNX/<a href="https://drive.google.com/drive/folders/18ktD86xSkhznc4LFKPdytoVK0vdlx22Z?usp=share_link" target="_blank">Themes</a>/<br>
+									/atmosphere/<a href="https://drive.google.com/drive/folders/17gU69Hv2NePmBQL6cXyQahulAXZZS9os?usp=share_link" target="_blank">contents</a>/&lt;TITLEID&gt;/romfs/message/*<br>
+								</td>
+								<td>
+									: System Theme Folder (Theme Files + Background)<br>
+									: Custom System Strings for &lt;TITLEID&gt;<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- ALL-IN-ONE SWITCH UPDATER HamletDuFromage/aio-switch-updater -->
+				<tr class="RigaApp" id="HamletDuFromage/aio-switch-updater">
+					<td><a href=""><img src="https://user-images.githubusercontent.com/61667930/93691188-7833f000-fad1-11ea-866d-42e19be54425.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/HamletDuFromage/aio-switch-updater" target="_blank">All-In-One Switch Updater</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="HamletDuFromage/aio-switch-updater_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('HamletDuFromage/aio-switch-updater')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="HamletDuFromage/aio-switch-updater_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="HamletDuFromage/aio-switch-updater_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>MULTIPURPOSE UPDATER</td>
+				</tr>
+
+				<!-- EDIZON SE tomvita/EdiZon-SE -->
+				<tr class="RigaApp" id="tomvita/EdiZon-SE">
+					<td><a href=""><img src="https://user-images.githubusercontent.com/68505331/94226638-aa5aad00-ff2a-11ea-8b39-151c41bbc774.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/tomvita/EdiZon-SE" target="_blank">Edizon SE</a></p>
+						<p style="font-family:'Consolas'">0100000000001013</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="tomvita/EdiZon-SE_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('tomvita/EdiZon-SE')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="tomvita/EdiZon-SE_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="tomvita/EdiZon-SE_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>SAVE EDITING + CHEAT TOOL</td>
+				</tr>
+
+				<!-- RETROARCH libretro/RetroArch -->
+				<tr class="RigaApp" id="libretro/RetroArch">
+					<td><a href=""><img src="https://forums.libretro.com/uploads/default/original/2X/8/88be0c79786a2e364b16067f68d720492cb3dc44.ico" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/libretro/RetroArch" target="_blank">RetroArch</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="libretro/RetroArch_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('libretro/RetroArch')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="libretro/RetroArch_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="libretro/RetroArch_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default">?</div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default">?</div>
+					</td>
+					<td>MULTISYSTEM EMULATOR</td>
+				</tr>
+
+				<!-- HB MENU switchbrew/nx-hbmenu -->
+				<tr class="RigaApp" id="switchbrew/nx-hbmenu">
+					<td><a href=""><img src="https://raw.githubusercontent.com/switchbrew/nx-hbmenu/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">HB Menu</a></p>
+						<p style="font-family:'Consolas'">054023527B992000</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="switchbrew/nx-hbmenu_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('switchbrew/nx-hbmenu')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="switchbrew/nx-hbmenu_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="switchbrew/nx-hbmenu_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('switchbrew/nx-hbmenu')" onkeydown="mostraDettagli('switchbrew/nx-hbmenu', event)" data-title="auto override setup" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						HOMEBREW MENU (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)
+						<div id="switchbrew/nx-hbmenu_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1JBVYKOee8FdMN6wRAypLhOIFYvT__2Er?usp=sharing" target="_blank">ATMOSPHERE</a> - HBMenu</caption>
+								<td class="colonnaMinima">
+									/atmosphere/config/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPMANPafQGPISy4DtdCI/view?usp=share_link" target="_blank">override_config.ini</a><br>
+									/atmosphere/<a href="https://drive.google.com/file/d/1BBA-i4FStZQsnBHq5hVkD5bctZFAmWAe/view?usp=share_link" target="_blank">HomeBrew Menu Forwarder_054023527B992000.nsp</a><br>								
+								</td>
+								<td>
+									: Override (for HBMenu forwarder)<br>
+									: Forwarder (to be installed)
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- HAZE (USB file transfer) Atmosphere-NX/Atmosphere -->
+				<tr class="RigaAppND" id="NoID1">
+					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/haze/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Haze (USB File Transfer)</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="LatestHaze">--</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="InstalledHaze">--</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>USB FILE TRANSFER (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)</td>
+				</tr>
+
+				<!-- DAYBREAK Atmosphere-NX/Atmosphere -->
+				<tr class="RigaAppND" id="NoID2">
+					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/daybreak/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Daybreak</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="LatestDaybreak">--</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="InstalledDaybreak">--</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>FIRMWARE INSTALLER (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)</td>
+				</tr>
+
+				<!-- REBOOT TO PAYLOAD Atmosphere-NX/Atmosphere -->
+				<tr class="RigaAppND" id="NoID3">
+					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/reboot_to_payload/reboot_to_payload.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Reboot to Payload</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="LatestRebootToPayload">--</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="InstalledRebootToPayload">--</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>REBOOTS CFW (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)</td>
+				</tr>
+
+			</table>
+		</div>
+		
+
+		<!-- SYSMODULES + OVERLAYS -->
+		<div class="strutturaTabella">
+			<table style="width:100%">
+				<caption>SYSMODULES + OVERLAYS</caption>
+				<!-- INTESTAZIONE -->
+				<tr>
+					<th style="width:10%">ICON</th>
+					<th style="width:20%">NAME - TITLEID</th>
+					<th style="width:50px">FLAGS</th>
+					<th>NOTES</th>
+				</tr>
+
+				<!-- NX-OVLLOADER WerWolv/nx-ovlloader -->
+				<tr class="RigaApp" id="WerWolv/nx-ovlloader">
+					<td><a href=""><img src="https://camo.githubusercontent.com/28e403999e25033b04d336579756283aa0309d5b160aa2f9b48f9685feba0d46/68747470733a2f2f692e696d6775722e636f6d2f666877796a62642e706e67" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/WerWolv/nx-ovlloader" target="_blank">nx-ovlloader</a></p>
+						<p style="font-family:'Consolas'">420000000007E51A</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="WerWolv/nx-ovlloader_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('WerWolv/nx-ovlloader')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="WerWolv/nx-ovlloader_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="WerWolv/nx-ovlloader_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>OVERLAY LOADER</td>
+				</tr>
+
+				<!-- TESLA MENU WerWolv/Tesla-Menu -->
+				<tr class="RigaApp" id="WerWolv/Tesla-Menu">
+					<td><a href=""><img src="https://camo.githubusercontent.com/28e403999e25033b04d336579756283aa0309d5b160aa2f9b48f9685feba0d46/68747470733a2f2f692e696d6775722e636f6d2f666877796a62642e706e67" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/WerWolv/Tesla-Menu" target="_blank">Tesla Menu</a></p>
+						<p style="font-family:'Consolas'">420000000007E51A</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="WerWolv/Tesla-Menu_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('WerWolv/Tesla-Menu')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="WerWolv/Tesla-Menu_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="WerWolv/Tesla-Menu_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>TESLA MENU</td>
+				</tr>
+
+				<!-- FAST CFW SWITCH Hartie95/fastCFWswitch -->
+				<tr class="RigaApp" id="Hartie95/fastCFWswitch">
+					<td><a href=""><img src="https://cdn-icons-png.flaticon.com/512/5266/5266418.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/Hartie95/fastCFWswitch" target="_blank">fastCFWswitch</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="Hartie95/fastCFWswitch_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('Hartie95/fastCFWswitch')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="Hartie95/fastCFWswitch_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="Hartie95/fastCFWswitch_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('Hartie95/fastCFWswitch')" onkeydown="mostraDettagli('Hartie95/fastCFWswitch', event)" data-title="Custom Boot Entries" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						PAYLOAD LAUNCHER MENU
+						<div id="Hartie95/fastCFWswitch_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1WUp5l_nnQ0U2cNpp4IRfzQHBf8vsHpNy?usp=share_link" target="_blank">FAST CFW SWITCH</a></caption>
+								<td class="colonnaMinima">
+									/config/fastCFWswitch/<a href="https://drive.google.com/file/d/1IkUwnfDuyCewtzX62OFLjsiT42o_NLpC/view?usp=share_link" target="_blank">config.ini</a><br>
+								</td>
+								<td>
+									: Boot Entries<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- STATUS MONITOR masagrator/Status-Monitor-Overlay -->
+				<tr class="RigaApp" id="masagrator/Status-Monitor-Overlay">
+					<td><a href=""><img src="https://cdn-icons-png.flaticon.com/512/543/543275.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/masagrator/Status-Monitor-Overlay" target="_blank">Status Monitor</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="masagrator/Status-Monitor-Overlay_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('masagrator/Status-Monitor-Overlay')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="masagrator/Status-Monitor-Overlay_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="InstalledStatusMonitorOverlay_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('masagrator/Status-Monitor-Overlay')" onkeydown="mostraDettagli('masagrator/Status-Monitor-Overlay', event)" data-title="Extra File" tabindex="0"><img class="iconaInfo" alt="!INF!"></abbr></div>
+					</td>
+					<td>
+						REAL-TIME HARDWARE MONITOR
+						<div id="masagrator/Status-Monitor-Overlay_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli">SALTY NX (additional app)</caption>
+								
+								<!-- SALTY NX masagrator/SaltyNX -->
+								<tr class="RigaApp" id="masagrator/SaltyNX">
+									<td class="colonnaMinima"><a href="https://github.com/masagrator/SaltyNX" target="_blank">SaltyNX</a></td>
+									<td class="colonnaMinima">
+										<table style="width:100%">
+											<td class="colonnaVersioni colonnaMinima">
+												<p id="masagrator/SaltyNX_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('masagrator/SaltyNX')" alt="!UPD!"></p>
+											</td>
+											<td class="colonnaVersioni">
+												<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="masagrator/SaltyNX_LatestVersion">?</span></p>
+												<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="masagrator/SaltyNX_InstalledVersion">?</span></p>
+											</td>
+										</table>
+									</td>
+									<td>: (0000000000534C56) file/code modification background process</td>
+								</tr>
+
+								<!-- SALTY NX TOOL masagrator/SaltyNX-Tool -->
+								<tr class="RigaApp" id="masagrator/SaltyNX-Tool">
+									<td class="colonnaMinima"><a href="https://github.com/masagrator/SaltyNX-Tool" target="_blank">SaltyNX-Tool</a></td>
+									<td class="colonnaMinima">
+										<table style="width:100%">
+											<td class="colonnaVersioni colonnaMinima">
+												<p id="masagrator/SaltyNX-Tool_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('masagrator/SaltyNX-Tool')" alt="!UPD!"></p>
+											</td>
+											<td class="colonnaVersioni">
+												<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="masagrator/SaltyNX-Tool_LatestVersion">?</span></p>
+												<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="masagrator/SaltyNX-Tool_InstalledVersion">?</span></p>
+											</td>
+										</table>
+									</td>
+									<td>: Manage SaltyNX functions</td>
+								</tr>
+								
+								<!-- NX-FPS masagrator/NX-FPS -->
+								<tr class="RigaApp" id="masagrator/NX-FPS">
+									<td class="colonnaMinima"><a href="https://github.com/masagrator/NX-FPS" target="_blank">NX-FPS</a></td>
+									<td class="colonnaMinima">
+										<table style="width:100%">
+											<td class="colonnaVersioni colonnaMinima">
+												<p id="masagrator/NX-FPS_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('masagrator/NX-FPS')" alt="!UPD!"></p>
+											</td>
+											<td class="colonnaVersioni">
+												<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="masagrator/NX-FPS_LatestVersion">?</span></p>
+												<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="masagrator/NX-FPS_InstalledVersion">?</span></p>
+											</td>
+										</table>
+									</td>
+									<td>: SaltyNX Plugin collecting FPS data</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- OVL SYSMODULE WerWolv/ovl-sysmodules -->
+				<tr class="RigaApp" id="WerWolv/ovl-sysmodules">
+					<td><a href=""><img src="http://nintendo-wii.logic-sunrise.com/images/news/1093169/switch-ovl-sysmodules-v120-disponible.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/WerWolv/ovl-sysmodules" target="_blank">ovlSysmodules</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="WerWolv/ovl-sysmodules_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('WerWolv/ovl-sysmodules')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="WerWolv/ovl-sysmodules_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="WerWolv/ovl-sysmodules_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>SYSMODULES TOGGLER MENU</td>
+				</tr>
+
+				<!-- SYS-FTPD-LIGHT cathery/sys-ftpd -->
+				<tr class="RigaApp" id="cathery/sys-ftpd">
+					<td><a href=""><img src="https://static.wiidatabase.de/ftpd-neu.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/cathery/sys-ftpd" target="_blank">sys-ftpd-light</a></p>
+						<p style="font-family:'Consolas'">420000000000000E</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="cathery/sys-ftpd_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('cathery/sys-ftpd')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="cathery/sys-ftpd_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="cathery/sys-ftpd_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('cathery/sys-ftpd')" onkeydown="mostraDettagli('cathery/sys-ftpd', event)" data-title="Configuration File" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						BACKGROUND FTP SERVER
+						<div id="cathery/sys-ftpd_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1Bng8tpvpCznWiGNc0JIGFm4E30_UqSxj?usp=share_link" target="_blank">SYS-FTPD-LIGHT</a></caption>
+								<td class="colonnaMinima">
+									/config/sys-ftpd/<a href="https://drive.google.com/file/d/1zHepg9dZByEdDuTyypbQD5S7gxNGqVek/view?usp=share_link" target="_blank">config.ini</a><br>
+								</td>
+								<td>
+									: Username + Password File<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- SHARE NX OVERLAY HookedBehemoth/ShareNX-Overlay -->
+				<tr class="RigaApp" id="HookedBehemoth/ShareNX-Overlay">
+					<td><a href=""><img src="https://raw.githubusercontent.com/HookedBehemoth/ShareNX/master/icon.jpg" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/HookedBehemoth/ShareNX-Overlay" target="_blank">ShareNX-Overlay</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="HookedBehemoth/ShareNX-Overlay_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('HookedBehemoth/ShareNX-Overlay')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="HookedBehemoth/ShareNX-Overlay_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="HookedBehemoth/ShareNX-Overlay_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>LATEST SCREENSHOT UPLOADER</td>
+				</tr>
+
+				<!-- FIZEAU averne/Fizeau -->
+				<tr class="RigaApp" id="averne/Fizeau">
+					<td><a href=""><img src="https://camo.githubusercontent.com/4ab4a626b6bf9435bd69c9b322b6711c4d87b5b0b36a370aec4a2d6a445ea9d0/68747470733a2f2f692e696d6775722e636f6d2f375655765a68652e706e67" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/averne/Fizeau" target="_blank">Fizeau</a></p>
+						<p style="font-family:'Consolas'">0100000000000F12</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="averne/Fizeau_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('averne/Fizeau')" alt="!UPD!"></p>
+								</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="averne/Fizeau_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="averne/Fizeau_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('averne/Fizeau')" onkeydown="mostraDettagli('averne/Fizeau', event)" data-title="Custom Values" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						SCREEN COLOR FILTER - overlay (+channel)
+						<div id="averne/Fizeau_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1NWVAbaN2kwBLxKklylnM45b76ea2OP10?usp=share_link" target="_blank">FIZEAU</a></caption>
+								<td class="colonnaMinima">
+									/config/Fizeau/<a href="https://drive.google.com/file/d/1tQyOQyQStZikTpGSLMKxeOtxi_M8ZDcV/view?usp=share_link" target="_blank">config.ini</a><br>
+								</td>
+								<td>
+									: Configuration File<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- EMUIIBO XorTroll/emuiibo -->
+				<tr class="RigaApp" id="XorTroll/emuiibo">
+					<td><a href=""><img src="https://raw.githubusercontent.com/XorTroll/emuiibo/master/res/logo_2.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/XorTroll/emuiibo" target="_blank">emuiibo</a></p>
+						<p style="font-family:'Consolas'">0100000000000352</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="XorTroll/emuiibo_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('XorTroll/emuiibo')" alt="!UPD!"></p>
+								</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="XorTroll/emuiibo_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="XorTroll/emuiibo_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('XorTroll/emuiibo')" onkeydown="mostraDettagli('XorTroll/emuiibo', event)" data-title="amiibo files" tabindex="0"><img class="iconaConfigurazioneRichiesta" alt="!CNF!"></abbr></div>
+					</td>
+					<td>
+						VIRTUAL AMIIBO EMULATION
+						<div id="XorTroll/emuiibo_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/17efNjyNimJvQycwJ5IU-LDkISgE-QhTl?usp=share_link" target="_blank">EMUIIBO</a></caption>
+								<td class="colonnaMinima">
+									/emuiibo/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPM" target="_blank">amiibo</a>/<br>
+								</td>
+								<td>
+									: Virtual Amiibo files<br>
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- QUICK NTP nedex/QuickNTP -->
+				<tr class="RigaApp" id="nedex/QuickNTP">
+					<td><a href=""><img src="https://www.techcrumble.net/wp-content/uploads/2017/10/images-1200x1200.png" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/nedex/QuickNTP" target="_blank">QUICK NTP</a></p>
+						<p style="font-family:'Consolas'">&#150;&#150;</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="nedex/QuickNTP_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('nedex/QuickNTP')" alt="!UPD!"></p>
+								</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="nedex/QuickNTP_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="nedex/QuickNTP_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+					</td>
+					<td>SYNC CONSOLE TIME WITH NTP SERVER</td>
+				</tr>
+
+				<!-- LDN MITM spacemeowx2/ldn_mitm -->
+				<tr class="RigaApp" id="spacemeowx2/ldn_mitm">
+					<td><a href=""><img src="https://gbatemp.net/attachments/upload_2018-12-7_13-51-15-png.151344/" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/spacemeowx2/ldn_mitm" target="_blank">ldn_mitm</a></p>
+						<p style="font-family:'Consolas'">4200000000000010</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="spacemeowx2/ldn_mitm_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('spacemeowx2/ldn_mitm')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="spacemeowx2/ldn_mitm_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="spacemeowx2/ldn_mitm_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default"></div>
+						<div class="strutturaTabella iconaFlag"><abbr onclick="mostraDettagli('spacemeowx2/ldn_mitm')" onkeydown="mostraDettagli('spacemeowx2/ldn_mitm', event)" data-title="Extra File" tabindex="0"><img class="iconaInfo" alt="!INF!"></abbr></div>
+					</td>
+					<td>
+						REDIRECT WIRELESS CONNECTION TO LAN MODE CONNECTION
+						<div id="spacemeowx2/ldn_mitm_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
+							<table style="width:100%">
+								<caption class="captionTabellaDettagli"><a href="https://drive.google.com/drive/folders/1OB67zy_qCpndOGQ8PlC3tZdToBTenkkW?usp=share_link" target="_blank">LDN MITM</a></caption>
+								<td class="colonnaMinima">
+									<a href="https://rentry.org/TeknikLAN" target="_blank">TeknikLAN</a><br>
+									<a href="https://drive.google.com/file/d/19IS-rIcsxXlX43cO-OhpAf9wK_XnlLX5/view?usp=share_link" target="_blank">LAN.txt</a><br>
+									<a href="http://www.lan-play.com" target="_blank">LanPlay</a><br>
+								</td>
+								<td>
+									: Config Guide<br>
+									: Command<br>
+									: Game - Server List
+								</td>
+							</table>
+						</div>
+					</td>
+				</tr>
+
+				<!-- MISSION CONTROL ndeadly/MissionControl -->
+				<tr class="RigaApp" id="ndeadly/MissionControl">
+					<td><a href=""><img src="https://img.freepik.com/premium-vector/set-logo-vector-game-joystick-illustration-logo-design_293731-176.jpg?w=740" alt="PicError"></a></td>
+					<td>
+						<p><a href="https://github.com/ndeadly/MissionControl" target="_blank">Mission Control</a></p>
+						<p style="font-family:'Consolas'">010000000000BD00</p>
+						<table style="width:100%">
+							<td class="colonnaVersioni colonnaMinima">
+								<p id="ndeadly/MissionControl_PulsanteAggiornamento" style="display:none;"><img class="iconaVersioni iconaModificaVersione" onclick="apriFinestraVersioni('ndeadly/MissionControl')" alt="!UPD!"></p>
+							</td>
+							<td class="colonnaVersioni">
+								<p><img class="iconaVersioni iconaUltimaVersione" alt="!CLD!"> <span id="ndeadly/MissionControl_LatestVersion">?</span></p>
+								<p><img class="iconaVersioni iconaVersioneInstallata" alt="!DEV!"> <span id="ndeadly/MissionControl_InstalledVersion">?</span></p>
+							</td>
+						</table>
+					</td>
+					<td>
+						<div class="strutturaTabella iconaFlag" style="cursor:default">?</div>
+						<div class="strutturaTabella iconaFlag" style="cursor:default">?</div>
+					</td>
+					<td>BLUETOOTH CONTROLLERS HOST</td>
+				</tr>
+
+			</table>
+		</div>
+		
+		
+		<!-- ALTRA TABELLA -->
+		</center>
+		<!-- EXTRA -->
+		<div class="strutturaTabella" style="border-style:hidden">
+			<table style="width:1px;white-space:nowrap;border:1px solid #ddd;">
+				<caption class="captionTabellaDettagli">EXTRA</caption>
+				<tr>
+					<td><a href="https://drive.google.com/drive/folders/10HY0tkxJH0trS3i23P0CKe8yPcQeL5wI?usp=share_link" target="_blank">&#128274;KEYS + PRODINFO</a></td>
+				</tr>
+				<tr>
+					<td><a href="https://github.com/F-l-a/FlaSwitch/blob/main/Versioni.json" target="_blank">F-l-a/FlaSwitch/Versioni.json</a></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		<h2>NOTES</h2>		
+		<pre>	FILEPATH
+		/Android : Official Android Folder
+
+		/atmosphere : Atmosphere Custom Firmware Folder
+		/atmosphere/hosts/default.txt : Anti-ban (DNS MITM file for ATMOSPHERE emuMMC)
+
+		/bootloader : Hekate Folder
+		/bootloader/hekate_ipl.ini : .ini File for Hekate. Manage "Launch" button entries
+
+		/config : .ini files for Atmosphere Apps (or Tesla's Overlays)
+		/config/aio-switch-updater/preserve.txt : list of elements to preserve during an update.
+
+		/emuMMC : EmuNand Folder
+
+		/JKSV : JKSV Folder (SaveFiles Manager)
+
+		/switch : App Folder
+
+		/switchroot : Android: also Used by Hekate for android (Contains Android Payload and Joycons BT Dump)
+
+		/tegraexplorer : Tegra Explorer Folder (Contains Tegra Explorer Scripts)
+
+		/themes : Themes Folder
+
+		FILES ON ROOT
+		/exosphere.ini : Anti-ban (Blanks ProdInfo)
+		/hbmenu.nro : HomeBrew Menu app
+
+
+		DELETABLE
+		/hekate_ctcaer_x.x.x.bin : Hekate Payload
+		/LOST.DIR : Android generated folder
+		-----------------------------------------
+		</pre>
+		
+		<pre>	CODES
+		#GAMES
+		0100152000022000 - Mario Kart 8 Deluxe
+		0100000000010000 - Super Mario Odyssey
+		010019401051C000 - Mario Strikers: Battle League Football
+		0100000011D90000 - Pokemon Brilliant Diamond
+		010042D00D900000 - Lego Star Wars: The Skywalker Saga
+		010036B0034E4000 - Super Mario Party
+		01007EF00011E000 - The Legend of Zelda: Breath of the Wild
+		01006a800016e000 - Super Smash Bros. Ultimate
+		01003D200BAA2000 - Pokemon Mystery Dungeon: Rescue Team DX
+		0100FF500E34A000 - Xenoblade Chronicles: Definitive Edition
+		0100EA80032EA000 - New Super Mario Bros. U Deluxe
+		0100DCA0064A6000 - Luigi's Mansion 3
+		0100bde00862a000 - Mario Tennis Aces
+		0100ABF008968000 - Pokemon Sword
+		01001F5010DFA000 - Pokemon Legends: Arceus
+
+		#SYSTEM
+		0100000000001007 : Psl.szs - "playerSelect" applet
+		0100000000001013 : MyPage.szs - "myPage" applet		#(shared with EDIZON - NXActivityLog)
+		0100000000001000 : common.szs - "qlaunch" applet	#(shared with NXThemesInstaller: THEMES FOLDER)
+		010000000000100D : "PhotoViewer" applet			#(shared with NXGallery exefs)
+		8000000000000050 - WIFI Bluetooth Date-Time Data
+		</pre>
+		
+		<!-- USEFUL GUIDE LINKS -->
+		<div class="strutturaTabella">
+			<table style="width:100%">
+				<caption class="captionTabellaDettagli">GUIDE LINKS</caption>
+				<tr>
+					<td class="colonnaMinima"><a href="https://gbatemp.net/threads/a-short-introduction-to-the-tools.600247/" target="_blank">Tomvita's tools</a></td>
+					<td>(GBATemp) - Cheat and Memory Hacking Tools</td>
+				</tr>
+				<tr>
+					<td class="colonnaMinima"><a href="https://gbatemp.net/threads/how-to-build-almost-any-switch-cfw-or-homebrew-app.517065/" target="_blank">How to build almost ANY switch CFW or Homebrew app</a></td>
+					<td>(GBATemp) - Building Guide</td>
+				</tr>
+				<tr>
+					<td class="colonnaMinima"><a href="https://gbatemp.net/threads/make-album-icon-open-another-app.630405/post-10121825" target="_blank">Make Album icon open another app</a></td>
+					<td>(GBATemp) - Title Override</td>
+				</tr>
+				<tr id="SyncFix">
+					<td class="colonnaMinima"><a href="https://gbatemp.net/threads/guide-pairing-the-joy-con-on-emunand-and-sysnand.562519/" target="_blank">Pairing the joy-con on emunand and sysnand</a></td>
+					<td>(GBATemp) - [SyncFix.te] HOS to ATM Wireless Settings Cloning Script</td>
+				</tr>
+				<tr>
+					<td class="colonnaMinima"><a href="https://github.com/bandithedoge/switch-pl/wiki" target="_blank">The first FULL Nintendo Switch system menu fan translation! - Wiki</a></td>
+					<td>(GitHub) - [bandithedoge/switch-pl] Custom System Strings</td>
+				</tr>
+				<tr>
+					<td class="colonnaMinima"><a href="https://github.com/vgmoose/nro-asset-editor/releases/tag/1.0" target="_blank">NRO Asset Editor</a></td>
+					<td>(GitHub) - [vgmoose/nro-asset-editor] Edit NRO frontend info</td>
+				</tr>
+			</table>
+		</div>
+		
+		<script>
+			//GithubInfo moved in <head>
+			
+			//variabili di lavoro
+			var RICHIESTE_API_RIMANENTI;
+			var VERSIONI_INSTALLATE_PRESENTI = 0;
+			
+			/*-----*/
+			//Pulsanti del Menu - posso usare questo metodo se tolgo onclick() dalla immagine
+			const ElementoPulsanteMostraVersioni = document.getElementById("PulsanteMostraVersioni");				//prendo il pulsante per mostrare le versioni
+			ElementoPulsanteMostraVersioni.addEventListener("click", async (event) => {await mostraVersioni();});	//ci associo l'evento che chiama la funzione
+			ElementoPulsanteMostraVersioni.addEventListener("keydown", async (event) => {if(event.key === "Enter"){await mostraVersioni();}});	//ci associo l'evento che chiama la funzione
+			
+			const ElementoPulsanteMostraLimiteAPI = document.getElementById("PulsanteMostraLimiteAPI");				//prendo il pulsante per mostrare limite api
+			ElementoPulsanteMostraLimiteAPI.addEventListener("click", async (event) => {await ottieniLimiteRichiesteAPI();});	//ci associo l'evento che chiama la funzione
+			ElementoPulsanteMostraLimiteAPI.addEventListener("keydown", async (event) => {if(event.key === "Enter"){await ottieniLimiteRichiesteAPI();}});	//ci associo l'evento che chiama la funzione
+			
+			/*-----*/
+			
+			
+			//GESTISCE LA LOGICA PER MOSTRARE LE VERSIONI: Ottiene il numero di Richieste API -> Carica l'ultimo HASH -> Carica il file VersioniInstallate -> Carica le Ultime Versioni e Colora
+			async function mostraVersioni(){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE mostraVersioni\n\n", "font-size: 20px");	//DEBUG
+				//Inizialmente carica le versioni installate
+				try{
+					await ottieniLimiteRichiesteAPI();			//Ottengo il numero di richieste api disponibili
+				
+					if(RICHIESTE_API_RIMANENTI >= 2){		//Se ho abbastanza richieste API, ottengo l'ultimo hash e le versioni installate (usando 2 richieste API: una per ottenere l'ultimo hash del file + una per ottenere il file)
+						//console.log("In MOSTRAVERSIONI: Richieste API sufficienti: " + RICHIESTE_API_RIMANENTI + " / 2");	//DEBUG
+						await ottieniUltimoHash('mostraVersioni-ottieniVersioniInstallate');			//ottiene ultimo hash
+						await ottieniVersioniInstallate();	//prende file Installate, mostra le versioni e i pulsanti di aggiornamento
+					}else{
+						console.log("In MOSTRAVERSIONI: Richieste API NON sufficienti: " + RICHIESTE_API_RIMANENTI + " / 2");	//DEBUG
+						aggiungiNotifica('error','GITHUB ERROR','Insufficient API requests: Cannot load INSTALLED VERSIONS');
+					}
+				}catch(error){
+					//notifica gestione errore
+					aggiungiNotifica('error','GENERIC ERROR','Cannot load INSTALLED VERSIONS');
+					console.log(error);
+				}finally{
+				
+					//infine carica le versioni correnti
+					try{
+						await ottieniLimiteRichiesteAPI();			//Ottengo il numero di richieste api disponibili
+					
+						if(RICHIESTE_API_RIMANENTI >= VERSIONI_INSTALLATE_PRESENTI){		//Se ho abbastanza richieste API, ottengo l'ultimo hash e le versioni installate (usando 2 richieste API: una per ottenere l'ultimo hash del file + una per ottenere il file)
+							//console.log("In MOSTRAVERSIONI: Richieste API sufficienti: " + RICHIESTE_API_RIMANENTI + " / " + (parseInt(VERSIONI_INSTALLATE_PRESENTI)+1));	//DEBUG
+							await ottieniUltimoHash('mostraVersioni-ottieniUltimeVersioni');			//ottiene ultimo hash
+							await ottieniUltimeVersioni();	//prende ultime versioni, le mostra e chiama i colori
+						}else{
+							console.log("In MOSTRAVERSIONI: Richieste API NON sufficienti: " + RICHIESTE_API_RIMANENTI + " / " + parseInt(VERSIONI_INSTALLATE_PRESENTI)+1);	//DEBUG
+							aggiungiNotifica('error','GITHUB ERROR','Insufficient API requests: Cannot load LATEST VERSIONS');
+						}
+					}catch(error){
+						//notifica gestione errore
+						aggiungiNotifica('error','GENERIC ERROR','Cannot load LATEST VERSIONS');
+						console.log(error);
+					}finally{
+						aggiungiNotifica('default','Function mostraVersioni','DONE!');
+						//console.log("%c\n\nFINE FUNZIONE mostraVersioni\n-----\n\n", "font-size: 20px");	//DEBUG
+					}
+				}
+			}
+			
+			/*-----*/
+			//MOSTRA LA QTA RIMANANTE DI RICHIESTE API
+			async function ottieniLimiteRichiesteAPI(){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE ottieniLimiteRichiesteAPI\n\n", "font-size: 20px");	//DEBUG
+				try{
+					const response = await axios.get('https://api.github.com/rate_limit', {
+						headers: {
+							'Authorization': `Bearer ${API_TOKEN}`
+						}
+					});
+
+					//console.log("\nRisposta ottenuta. GET response:");	//DEBUG
+					//console.log(response);								//DEBUG
+					
+					RICHIESTE_API_RIMANENTI = response.data.resources.core.remaining;	//Memorizzo il numero di richieste disponibili
+					
+					//notifica sulle richieste disponibili e tempo reset
+					var testo = "remaining API requests: " + RICHIESTE_API_RIMANENTI + ", Reset: " + new Date(response.data.resources.core.reset*1000).toLocaleString();
+					aggiungiNotifica('info','API REQUESTS',testo);
+				}catch(error){
+					console.log("\nErrore nell'ottenimento risposta. GET error:");	//DEBUG
+					console.log(error);												//DEBUG
+					
+					//notifica errore
+					if (error.response !== undefined && error.response.status === 401) {
+						aggiungiNotifica('error','GITHUB ERROR','401: Invalid TOKEN');
+					}else{
+						aggiungiNotifica('error','GENERIC ERROR','Cannot get REMAINING API REQUESTS '+error);
+					}
+					//throw error;
+				}finally{
+					//aggiungiNotifica('default','Function ottieniLimiteRichiesteAPI','DONE!');
+					//console.log("%c\n\nFINE FUNZIONE ottieniLimiteRichiesteAPI\n-----\n\n", "font-size: 20px");	//DEBUG
+				}
+			}
+
+			
+			//ottiene e salva l'hash dell'ultima commit
+			async function ottieniUltimoHash(funzChiamante){
+				//console.log("\n\n-----\nINIZIO FUNZIONE ottieniUltimoHash\nChiamata da: " + funzChiamante + "\n");	//DEBUG
+				if(HASH === undefined){	//se non ho un hash già salvato. può generare incongruenze se per qualche motivo si effettuano operazioni di aggiornamento da altre schede (che modificano l'hash). in quel caso bisogna ricaricare la pagina
+					try{
+						const response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/commits`);
+						//console.log(response);
+						HASH = response.data[0].sha;
+						//console.log("\nottenuto ultimo hash:\n" + HASH);	//DEBUG
+						//notifica ricezione HASH
+					}catch(error){
+						aggiungiNotifica('error','GENERIC ERROR','Cannot get LATEST COMMIT HASH: "Main" used');
+						console.log("\nerrore nell'ottenimento dell'ultima commit. uso MAIN" + error);	//DEBUG
+						
+						//notifica errore
+						HASH = "main";			//in caso di errore nell'ottenimento dell'hash, uso la parola chiave main (utilizzo i valori del commit presente in cache: circa 5min in ritardo)
+						//throw error;
+					}finally{
+						//aggiungiNotifica('default','Function ottieniUltimoHash','DONE!');
+						//console.log("%c\n\nFINE FUNZIONE ottieniUltimoHash\n-----\n\n", "font-size: 20px");	//DEBUG
+					}
+				}
+			}
+			
+			//OTTENGO LE VERSIONI INSTALLATE
+			async function ottieniVersioniInstallate(){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE ottieniVersioniInstallate\n\n", "font-size: 20px");	//DEBUG
+				
+				try{
+					//effettuo richiesta api
+					const response = await axios.get(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${HASH}/${FILE_PATH}`);	//prendo il file json delle versioni
+				
+					//console.log("\nRisposta ottenuta. GET response:");	//DEBUG
+					//console.log(response);								//DEBUG
+					
+					JSONversioniInstallate = response.data;				//ottengo i dati del json da github
+					//console.log(JSONversioniInstallate);				//DEBUG
+					
+					JSONversioniInstallate.forEach(function(APPLICAZIONE) {		//per ogni APP mostro la versione in Autore/NomeApp_InstalledVersion
+						//console.log("\n\nID: " + APPLICAZIONE.id);			//DEBUG
+						//console.log("Versione: " + APPLICAZIONE.Versione);	//DEBUG
+						
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).html(APPLICAZIONE.Versione);
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'black');
+						
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_PulsanteAggiornamento`).css('display', 'block');	// visualizza il pulsante aggiornamento
+					});
+					
+					VERSIONI_INSTALLATE_PRESENTI = JSONversioniInstallate.length;	//segno quante applicazioni ho
+				}catch(error){
+					var text = "Cannot get INSTALLED VERSION - " + error.code + ": " + error.message;
+					aggiungiNotifica('warning','GENERIC ERROR',text);
+					console.log("\nErrore nell'ottenimento risposta. GET error:");	//DEBUG
+					console.log(error);												//DEBUG
+				
+					//notifica gestione errore
+					//alert("error gathering Installed Version:\n" + error.message + "\ncode: " + error.code);
+					
+					//throw error;
+				}finally{
+					//aggiungiNotifica('default','Function ottieniVersioniInstallate','DONE!');
+					//console.log("%c\n\nFINE FUNZIONE ottieniVersioniInstallate\n-----\n\n", "font-size: 20px");	//DEBUG
+				}
+			}
+			
+			//OTTENGO LE ULTIME VERSIONI
+			async function ottieniUltimeVersioni(){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE ottieniUltimeVersioni\n\n", "font-size: 20px");	//DEBUG
+				
+				try{
+					var Applicazioni = document.getElementsByClassName("RigaApp"); 	// Seleziona tutti gli elementi con la classe "RigaApp"
+					
+					for(let i = 0; i < Applicazioni.length; i++){
+						var idAPP = Applicazioni[i].id;					//prendo l'ID dell'app
+						//console.log(idAPP);							//DEBUG
+						if(idAPP !== "NintendoHOSVersion"){
+							//effettuo richiesta api
+							try{
+								const response = await axios.get(`https://api.github.com/repos/${idAPP}/releases/latest`,
+								{
+									headers: {
+										'Authorization': `Bearer ${API_TOKEN}`
+									}
+								});
+								//console.log("\nRisposta ottenuta. GET response:");	//DEBUG
+								//console.log(response);								//DEBUG
+								
+								var ultimaVersione = response.data.tag_name;
+								
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersione);
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');
+							}catch(error){
+								var text = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
+								aggiungiNotifica('warning',idAPP,text);
+								console.log("\nErrore nell'ottenimento risposta " + idAPP + ". GET error:");	//DEBUG
+								console.log(error);												//DEBUG
+					
+								//notifica gestione errore
+								//alert(idAPP + "\nerror gathering latest Version:\n" + error.message + "\ncode: " + error.code);
+						
+								//throw error;
+							}
+						}else{
+							/*	https://api.allorigins.win/raw?url=				ok ma html
+							https://api.codetabs.com/v1/proxy?quest=   			ok ma html
+							https://cors-get-proxy.sirjosh.workers.dev/?url=	ok ma html
+							https://secret-ocean-49799.herokuapp.com/			no
+							https://cors.eu.org/								si	-flag Non sicuro
+							https://cors-proxy.tk/?url=							no
+							https://jsonp.afeld.me/								no
+							https://corsanywhere.herokuapp.com/					no
+							https://fast-dawn-89938.herokuapp.com/				no
+							https://cors-proxy.fringe.zone/						si
+							*/
+							try{
+								const response = await axios.get(`https://cors.eu.org/https://yls8.mtheall.com/ninupdates/titlelist.php?sys=hac&csv=1&reg=G&tid=0100000000000816`);	//prendo il file json delle versioni
+								
+								//console.log("\nRisposta ottenuta. GET response:");	//DEBUG
+								//console.log(response);								//DEBUG
+								
+								var ultimaVersioneFirmware = response.data.split(" ").pop().trim();	//ottengo l'ultima versione prendendola dall'ultimo elemento del file, a cui tolgo eventuali spazi alla fine/inizio
+								
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersioneFirmware);	//scrivo l'ultima versione
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');
+							}catch(error){
+							//notifica gestione errore
+								var text = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
+								aggiungiNotifica('warning',idAPP,text);
+								//alert("error gathering Firm Version:\n" + error.message + "\ncode: " + error.code);
+								console.log("\nErrore nell'ottenimento risposta " + idAPP + ". GET error:");	//DEBUG
+								console.log(error);
+							}
+						}
+						confrontaVersioni(idAPP);
+					}
+				}catch(error){
+					console.log("\nErrore generale. catch error:");	//DEBUG
+					console.log(error);					//DEBUG
+					
+					var text = error.code + ": " + error.message;
+					aggiungiNotifica('error','ottieniUltimeVersioni',text);
+					//notifica gestione errore
+					//alert("error in ottieniUltimeVersioni:\n" + error.message + "\ncode: " + error.code);
+					
+					//throw error;
+				}finally{
+					//aggiungiNotifica('default','Function ottieniUltimeVersioni','DONE!');
+					//console.log("%c\n\nFINE FUNZIONE ottieniUltimeVersioni\n-----\n\n", "font-size: 20px");	//DEBUG
+				}
+			}
+			
+			
+			//CONFRONTO LE VERSIONI
+			async function confrontaVersioni(APPLICAZIONE){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE confrontaVersioni\n\n", "font-size: 20px");	//DEBUG
+				const vettoreCasiParticolari= ['J-D-K/JKSV'];
+				
+				try{
+					var ultimaVersione = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).text();	//prendo ultima versione dal campo
+					var versioneInstallata = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).text();	//prendo versione installata dal campo
+				
+					//effettuo operazioni preliminari nel caso di casi particolari
+					if (vettoreCasiParticolari.includes(APPLICAZIONE) === true) {
+						if (APPLICAZIONE === 'J-D-K/JKSV') {		//data in formato gg/mm/aaaa
+							
+							//converto la data nel numero di giorni
+							ultimaVersione = ultimaVersione.replaceAll('.', '/').split('/');	//trasformo i punti in barre per uniformare le date - versioni, poi splitto sulla barra
+
+							ultimaVersione = parseInt(ultimaVersione[0]) + parseInt(ultimaVersione[1])*30 + parseInt(ultimaVersione[2])*365;
+
+							versioneInstallata = versioneInstallata.replaceAll('.', '/').split('/');
+							versioneInstallata = parseInt(versioneInstallata[0]) + parseInt(versioneInstallata[1])*30 + parseInt(versioneInstallata[2])*365;
+						}
+					}
+					//confronto e coloro
+					if (versioneInstallata < ultimaVersione) {						//se la versione installata è vecchia
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'red');		//allora testo installata di colore rosso
+					} else if (versioneInstallata > ultimaVersione) {				//se la versione installata è nuova
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'red');			//allora testo ultima di colore rosso
+					}
+					
+				}catch(error){
+					console.log("\nIn CONFRONTAVERSIONI: Errore generale. catch error:");	//DEBUG
+					console.log(error);					//DEBUG
+				
+					var text = error.code + ": " + error.message;
+					aggiungiNotifica('error','confrontaVersioni',text);
+					//notifica gestione errore
+					//alert("error in confrontaVersioni:\n" + error.message + "\ncode: " + error.code);
+					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'green');
+					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'green');
+				}finally{
+					//aggiungiNotifica('default','Function confrontaVersioni','DONE!');			//commentato perché spamma troppo
+					//console.log("APP: " + APPLICAZIONE + " , INSTALLATA: " + versioneInstallata + " ,ULTIMA: " + ultimaVersione);
+					//console.log("%c\n\nFINE FUNZIONE confrontaVersioni\n-----\n\n", "font-size: 20px");	//DEBUG
+				}
+			}
+			
+		/*GESTISCE CARICAMENTO DATI - fine*/
+		
+		/*GESTISCE AGGIORNAMENTO VERSIONI - inizio*/
+		
+			//apre le finestre per l'aggiornamento
+			async function apriFinestraVersioni(APPLICAZIONE){	//si da per scontato che l'hash sia l'ultimo. per accedere alla funzione bisogna avere caricato le versioni, che salvano l'hash
+				await ottieniUltimoHash('apriFinestraVersioni');	//da eliminare in caso di errori, per togliere async da apriFinestraVersioni
+				
+				
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE apriFinestraVersioni\n\n", "font-size: 20px");	//DEBUG
+				
+				//prendo versione richiesta
+			
+				var ultimaVersione = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).text();	//prendo ultima versione dal campo
+				var versioneInstallata = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).text();	//prendo versione installata dal campo
+				
+				var nuovaVersione = prompt("UPDATE\nApp: " + APPLICAZIONE + "\nCurrent Version: " + versioneInstallata + "\nLatest version: " + ultimaVersione, ultimaVersione);  
+				
+				//se non ho annullato l'operazione
+				if (nuovaVersione !== null){
+					//chiedo conferma
+					var conferma = confirm("UPDATE RECAP\nApp: " + APPLICAZIONE + "\nCurrent Version: " + versioneInstallata + "\nLatest version: " + ultimaVersione + "\nNew version: " + nuovaVersione);  
+					if (conferma === true) {
+						//console.log("Nuova versione: " + APPLICAZIONE + " : "+ nuovaVersione);
+						aggiornaVersioni(APPLICAZIONE, nuovaVersione);
+					} else {
+						//console.log("Annullata (non confermata): " + APPLICAZIONE);
+						alert("UPDATE CANCELLED");
+					}
+				} else {
+					console.log("Annullata (non inserito): " + APPLICAZIONE);
+					alert("UPDATE CANCELLED");
+				}
+			
+				//console.log("%c\n\nFINE FUNZIONE apriFinestraVersioni\n-----\n\n", "font-size: 20px");	//DEBUG
+			}
+		
+			//aggiorna le versioni
+			function aggiornaVersioni(APPLICAZIONE, nuovaVersione){
+				
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE aggiornaVersioni\n\n", "font-size: 20px");	//DEBUG
+				
+				//effettuo la richesta api
+				axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, 
+				{
+					headers: {
+						'Authorization': `Bearer ${API_TOKEN}`
+					}
+				})
+				.then(function (response) {
+					
+					//console.log("\nFile da modificare ottenuto. GET response:");
+					//console.log(response);
+					
+					const sha = response.data.sha;
+					const content = response.data.content;
+					const decodedContent = window.atob(content);
+					
+					const vettoreApplicazioniJSON = JSON.parse(decodedContent);	// converto la stringa JSON in un vettore di oggetti JavaScript
+					
+					//console.log(nuovaVersione);
+
+					var flagAggiornato = false;							//inizializzo per ricerca app
+					vettoreApplicazioniJSON.forEach(function(APP) {		//per ogni app del vettore
+						if (APP.id === APPLICAZIONE) {					//se trovo quella da aggiornare
+							APP.Versione = nuovaVersione; 				// assegno il nuovo valore per la versione
+							flagAggiornato = true;						//segno che ho trovato la app
+						}
+					});
+					
+					if(flagAggiornato){										//se ho fatto cambiamenti al file, lo carico. altrimenti niente
+						const updatedContent = JSON.stringify(vettoreApplicazioniJSON, null, 2);	// converto l'oggetto in una nuova stringa JSON
+						const encodedContent = window.btoa(updatedContent);		//riconverto la stringa in base64
+						
+						//console.log("\nContenuto aggionato:");	//DEBUG
+						//console.log(updatedContent);			//DEBUG
+						
+						//RICARICO IL FILE AGGIORNATO
+						axios.put(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, 
+						{
+							"message": `Aggiornamento ${APPLICAZIONE} alla versione ${nuovaVersione}`,
+							"content": encodedContent,
+							"sha": sha
+						},
+						{
+							headers: {
+								'Authorization': `Bearer ${API_TOKEN}`
+							}
+						})
+						.then(function (response) {
+							//console.log("\nFile aggiornato. PUT response:");
+							//console.log(response);
+							
+							HASH = response.data.commit.sha;	//salvo nuovo hash
+							alert("UPDATED!\nAPP: " + APPLICAZIONE);	//METTERE ALERT
+							//mostro la versione modificata
+							$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).html(nuovaVersione);
+							$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'black');
+						
+							confrontaVersioni(APPLICAZIONE);
+							
+						})
+						.catch(function (error) {
+							console.log("\nErrore nella modifica del file. PUT error:");
+							console.log(error);	//mettere alert
+							alert("errore nella modifica\n" + error);
+						});
+					
+					} else {
+						alert("ERROR:\n" + APPLICAZIONE + " not found in Versioni.json");
+					}
+				})
+				.catch(function (error) {	//mettere alert
+					console.log("\nErrore nell'ottenimento del file da modificare. GET error:");
+					console.log(error);
+					alert("errore nell'ottenimento del file da modificare\n" + error);
+				});
+				//console.log("%c\n\nFINE FUNZIONE aggiornaVersioni\n-----\n\n", "font-size: 20px");	//DEBUG
+			}
+		
+		/*GESTISCE AGGIORNAMENTO VERSIONI - fine*/
+		
+		
+		/*GESTISCE LE TABELLE DETTAGLI - inizio*/
+		
+			//MOSTRA-NASCONDE I DETTAGLI PER LA CONFIGURAZIONE CUSTOM DELL'applicazione ricevuta tra i parametri
+			function mostraDettagli(applicazione, evento) {
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE mostraDettagli\n\n", "font-size: 20px");	//DEBUG
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					var nomeElemento = applicazione + '_TabellaDettagli';
+					elemento = document.getElementById(nomeElemento);
+					if (elemento.style.display === "block") {		//se erano visibili
+						elemento.style.display = "none";			//allora li nasconde
+					} else {
+						elemento.style.display = "block";			//altrimenti li visualizza
+					}
+				}
+			}
+			
+			//MOSTRA-NASCONDE I DETTAGLI PER LA CONFIGURAZIONE CUSTOM DI TUTTI GLI ELEMENTI, A SECONDA DELL'ICONA PREMUTA (+ o -)
+			function mostraTutti(iconaPremuta, evento){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE mostraTutti\n\n", "font-size: 20px");	//DEBUG
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					var vettoreTabelleDettagli = document.getElementsByClassName("tabellaDettagli");	//ottengo vettore degli elementi che contengono i dettagli
+					for (var i = 0; i < vettoreTabelleDettagli.length; i++) {							//per ogni tabella dei dettagli
+						if (iconaPremuta === "ExpandIconButton") {										//controlla quale azione eseguire. se deve espandere
+							vettoreTabelleDettagli[i].style.display = "block";							// visualizza la tabella
+						} else {
+							vettoreTabelleDettagli[i].style.display = "none";							//altrimenti la nasconde
+						}
+					}
+					if (iconaPremuta === "ExpandIconButton") {											//infine cambia lo stato del pulsante cambiando l'id e l'alt
+						document.getElementById(iconaPremuta).id = 'CollapseIconButton';
+						document.getElementById("ExpandIconButtonImage").id = 'CollapseIconButtonImage';
+						document.getElementById("CollapseIconButtonImage").alt = "Collapse All";
+					} else {
+						document.getElementById(iconaPremuta).id = 'ExpandIconButton';
+						document.getElementById("CollapseIconButtonImage").id = 'ExpandIconButtonImage';
+						document.getElementById("ExpandIconButtonImage").alt = "Expand All";
+					}
+				}
+				//console.log("%c\n\nFINE FUNZIONE mostraTutti\n-----\n\n", "font-size: 20px");	//DEBUG
+			}
+			
+			//MOSTRA-NASCONDE LA TABELLA DEI PAYLOADS
+			function mostraPayloads(pulsantePremuto, evento){
+				//console.log("%c\n\n-----\nINIZIO FUNZIONE mostraPayloads\n\n", "font-size: 20px");	//DEBUG
+				
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+
+					mostraDettagli('dettagliPayloads');						//cambia lo stato della tabella
+					if (pulsantePremuto === "MostraDettagliPayloads") {		//controlla quale azione è stata eseguita. aggiorna la scritta cambiando l'id
+						document.getElementById(pulsantePremuto).innerHTML = "&and; HIDE PAYLOADS &and;";
+						document.getElementById(pulsantePremuto).id = 'NascondiDettagliPayloads';
+					} else {
+						document.getElementById(pulsantePremuto).innerHTML = "&or; SHOW PAYLOADS &or;";
+						document.getElementById(pulsantePremuto).id = 'MostraDettagliPayloads';
+					}
+				}
+				//console.log("%c\n\nFINE FUNZIONE mostraPayloads\n-----\n\n", "font-size: 20px");	//DEBUG
+			}		
+		
+		/*GESTISCE LE TABELLE DETTAGLI - fine*/
+		/*-----*/
+		
+		
+		/*-----*/ 
+		//NOTIFICHE
+		
+		try{
+			var polipop = new Polipop('mypolipop', {
+				appendTo: 'body', 			//elemento a cui è ancorato
+				layout: 'panel',			//tipologia: panel/popups
+				theme: 'compact',			//tema: default/minimal/compact
+				position: 'bottom-right',	//posizione del pannello
+				icons: true,				//segna se vengono visualizzate le icone nelle notifiche
+				insert: 'after',			//dove vengono inserite le nuove notifiche: before/after
+				spacing: 10,				//spazio tra le notifiche
+				pool: 5,					//quante notifiche possono esserci visualizzate
+				sticky: true,				//se le notifiche non hanno il timer
+				progressbar: true,			//visualizza il timer
+				life: 3000,					//durata timer in ms
+				pauseOnHover: true,			//ferma il timer se passo col mouse
+				headerText: 'Notifiche',	//nome pannello
+				closer: true,				//segna se il pulsante per chiudere viene mostrato
+				closeText: 'Nascondi',		//testo pulsante per chiudere il pannello
+				loadMoreText:'mostra altre',//testo pulsante per scorrere la coda
+				hideEmpty: false,			//segna se nascondere il pannello se vuoto
+				interval: 250,				//tempo tra un polling e l'altro per nuove notifiche in ms
+				effect: 'fade',				//tipo di effetto: fade/slide
+				easing: 'ease-in',			//tipo di animazione 'linear''ease''ease-in''ease-out''ease-in-out''cubic-bezier' value
+				effectDuration: 250			//numero di ms durata animazione
+				
+				
+			});
+			polipop.enable();
+			
+		}catch(error){
+			console.log(error);
+			if(polipop === undefined){
+				alert("Unable to create the Notification Pane.\nPlease refresh the page and check your internet connection");
+			}
+			
+		}
+
+			function aggiungiNotifica(tipoNotifica, titoloNotifica, contenutoNotifica, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					polipop.add({
+						content: contenutoNotifica,
+						title: titoloNotifica,
+						type: tipoNotifica			//default, info, success, warning, error
+					});
+					
+					/*
+					polipop.add({
+						type: 'success',
+						title: 'Message',
+						content: 'This is the message content.'
+					});
+					*/
+				}
+			}
+		
+		
+		</script>
+
+
+		<!-- 
+		_PulsanteAggiornamento
+		_LatestVersion
+		_InstalledVersion
+		_TabellaDettagli
+		-->
+
+	</body>
+</html>
