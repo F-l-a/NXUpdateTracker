@@ -11,7 +11,7 @@
 - STEP 3: To use all the functions of the app, you need to modify `/switch/NXUpdateTracker/githubInfo.ini`. Go to [Usage Guide](https://github.com/F-l-a/NXUpdateTracker#Usage-Guide)
 
 # Usage Guide
-Set the app up by following the steps [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md).
+Set the app up by following the steps [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md#nxupdatetracker---usage-guide).
 
 # Building Guide
 - STEP 1: Set up the environment. [Here](https://blog.teamneptune.net/getting-started-with-nintendo-switch-homebrew-development/)'s a guide.
