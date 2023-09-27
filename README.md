@@ -24,7 +24,7 @@ This will create a `open_and_copy_to_sd/switch/NXUpdateTracker` folder containin
 - HTML part:
 
   The app is a simple HTML(+JS+CSS) page accessed from the Nintendo Switch's web applet. The HTML page is hosted locally using Mongoose to create a local web server.
-  The page consists of a list of Applications contained in some tables. Each app is paired with two version numbers, for the latest available version and for the installed one. The latest version is taken directly from Github's official repository, while the installed one is taken from a JSON file hosted in a GitHub repository. (Each user needs to create his own repository, [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md)'s a guide to creating one). The installed version in the JSON can be modified using a button.
+  The page consists of a list of Applications contained in some tables. Each app is paired with two version numbers, for the latest available version and for the installed one. The latest version is taken directly from Github's official repository, while the installed one is taken from a JSON file hosted in a GitHub repository. (Each user needs to create his own repository, [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md)'s a guide on how to create one). The installed version in the JSON can be modified using a button.
   <p align="center">
     <img src="/Guides/screenshot.png" alt="App screenshot">
   </p>
