@@ -22,7 +22,7 @@ This will create a `open_and_copy_to_sd/switch/NXUpdateTracker` folder containin
 
 # How it works
 The app is a simple HTML(+JS+CSS) page accessed from the Nintendo Switch's web applet. The HTML page is hosted locally using Mongoose to create a local web server.
-On boot, the app writes the needed files (HTML, JS) in `sdmc:/switch/NXUpdateTracker/`, which will be the server's root folder. The needed files are taken from `romfs:/webapp/` and are hardcoded inside the .nro. To avoid overwriting current files, create an empty file named `.keep`. (Missing files are copied anyway. The GitHub credentials .ini file -`githubInfo.ini`- is not overwritten if already present).
+On boot, the app writes the needed files (HTML, JS) in `sdmc:/switch/NXUpdateTracker/`, which will be the server's root folder. The needed files are taken from `romfs:/webapp/` and are hardcoded inside the .nro. To avoid overwriting current files, create an empty file named `.keep` inside `/switch/NXUpdateTracker/`. (Missing files are copied anyway. The GitHub credentials .ini file -`githubInfo.ini`- is not overwritten if already present).
 <p align="center">
   <img src="/Guides/logic.png" alt="Logic diagram">
 </p>
