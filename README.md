@@ -8,7 +8,7 @@
 # Installation Guide
 - STEP 1: Download the .zip file
 - STEP 2: Extract the .zip and copy its contents inside the root of your SD card
-- STEP 3: To use all the functions of the app, you need to modify `/switch/NXUpdateTracker/githubInfo.ini`. Go to [Usage Guide](https://github.com/F-l-a/NXUpdateTracker#usageguide)
+- STEP 3: To use all the functions of the app, you need to modify `/switch/NXUpdateTracker/githubInfo.ini`. Go to [Usage Guide](https://github.com/F-l-a/NXUpdateTracker#Usage-Guide)
 
 # Usage Guide
 Set the app up following the steps [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md).
