@@ -21,8 +21,17 @@ Set the app up by following the steps [here](https://github.com/F-l-a/NXUpdateTr
 This will create a `open_and_copy_to_sd/switch/NXUpdateTracker` folder containing the .nro
 
 # How it works
-The app is a simple HTML(+JS+CSS) page accessed from the Nintendo Switch's web applet. The HTML page is hosted locally using Mongoose to create a local web server.
-On boot, the app writes the needed files (HTML, JS) in `sdmc:/switch/NXUpdateTracker/`, which will be the server's root folder. The needed files are taken from `romfs:/webapp/` and are hardcoded inside the .nro. To avoid overwriting current files, create an empty file named `.keep` inside `/switch/NXUpdateTracker/`. (Missing files are copied anyway. The GitHub credentials .ini file -`githubInfo.ini`- is not overwritten if already present).
-<p align="center">
-  <img src="/Guides/logic.png" alt="Logic diagram">
-</p>
+- HTML part:
+
+  The app is a simple HTML(+JS+CSS) page accessed from the Nintendo Switch's web applet. The HTML page is hosted locally using Mongoose to create a local web server.
+  The page consists of a list of Applications contained in some tables. Each app is paired with two version numbers, for the latest available version and for the installed one. The latest version is taken directly from Github's official repository, while the installed one is taken from a JSON file hosted in a GitHub repository. (Each user needs to create his own repository, [here](https://github.com/F-l-a/NXUpdateTracker/blob/main/Guides/README.md)'s a guide to creating one). The installed version in the JSON can be modified using a button.
+  <p align="center">
+    <img src="/Guides/screenshot.png" alt="App screenshot">
+  </p>
+
+- Switch part:
+  
+  On boot, the app writes the needed files (HTML, JS) in `sdmc:/switch/NXUpdateTracker/`, which will be the server's root folder. The needed files are taken from `romfs:/webapp/` and are hardcoded inside the .nro. To avoid overwriting current files, create an empty  file named `.keep` inside `/switch/NXUpdateTracker/`. (Missing files are copied anyway. The GitHub credentials .ini file -`githubInfo.ini`- is not overwritten if already present).
+  <p align="center">
+    <img src="/Guides/logic.png" alt="Logic diagram">
+  </p>
