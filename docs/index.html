@@ -6,9 +6,9 @@
 			//MODIFY HERE vvvv
 			//Github info - Insert your info here. DON'T SHARE THIS FILE WITH YOUR API_TOKEN. Delete it first. (If you didn't, delete it form https://github.com/settings/tokens )
 			var API_TOKEN = "INSERT_API_TOKEN_HERE";	//example: const API_TOKEN = "qwertyuiop1234567890";
-			var OWNER = "YOUR_USERNAME_HERE";			//example: const OWNER = "F-l-a";
-			var REPO = "YOUR_REPOSITORY_HERE";			//example: const REPO = "NXUpdateTracker";
-			var FILE_PATH = "FILE_PATH_HERE";			//example: const FILE_PATH = "Versions.json";
+			var OWNER = "F-l-a";			//example: const OWNER = "F-l-a";
+			var REPO = "FlaSwitch";			//example: const REPO = "NXUpdateTracker";
+			var FILE_PATH = "Versions.json";			//example: const FILE_PATH = "Versions.json";
 			//MODIFY HERE ^^^^^
 			////////////////////////////////////////////
 			
@@ -16,7 +16,7 @@
 		</script>
 		
 		<title>NXUpdateTracker</title>
-		<script>const APP_VERSION = "v1.0"</script>
+		<script>const APP_VERSION = "v1.0-demo"</script>
 		<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/icon_256x256.jpg">
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -251,7 +251,7 @@
 							</div>
 						</center>
 					</td>
-					<td style="width:33%"></td><!--Vuoto. serve per centrare il menu-->
+					<td style="width:33%">DEMO VERSION: Some functions may not work. Go <a href="https://github.com/F-l-a/NXUpdateTracker">here</a> to install the complete version</td><!--Vuoto. serve per centrare il menu-->
 				</tr>
 			</table>
 		</div>
@@ -1889,12 +1889,7 @@
 						if(idAPP !== "NintendoHOSVersion"){				//se non è NintendoHOSVersion, allora la versione è da prendere da github
 							try{
 								//PRENDE INFORMAZIONI SUL REPO CON CHIAMATA API A GITHUB
-								const response = await axios.get(`https://api.github.com/repos/${idAPP}/releases/latest`,
-								{
-									headers: {
-										'Authorization': `Bearer ${API_TOKEN}`
-									}
-								});
+								const response = await axios.get(`https://api.github.com/repos/${idAPP}/releases/latest`);
 								var ultimaVersione = response.data.tag_name;									//prendo l'ultima versione rilasciata
 								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersione);		//scrivo versione
 								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');		//imposto colore nero
@@ -1959,11 +1954,13 @@
 							versioneInstallata = versioneInstallata.replaceAll('.', '/').split('/');
 							versioneInstallata = parseInt(versioneInstallata[0]) + parseInt(versioneInstallata[1])*30 + parseInt(versioneInstallata[2])*365;
 						}else if(APPLICAZIONE === 'F-l-a/NXUpdateTracker'){	//devo mostrare messaggio
+							/*	NON DEVO MOSTRARE NULLA NELLA VERSIONE DEMO
 							if(APP_VERSION < ultimaVersione){				//se c'è una nuova versione
 								document.getElementById('F-l-a/NXUpdateTracker_InstalledVersion').style.display = "none";
 								document.getElementById('MessaggioAutore').style.display = "none";
 								document.getElementById('messaggioNuovaVersione').style.display = "block";
 							}
+							*/
 						}
 					}
 					//confronto e coloro
@@ -1998,11 +1995,7 @@
 				
 				try{
 					//EFFETTUA LA RICHIESTA API DEI LIMITI
-					const response = await axios.get('https://api.github.com/rate_limit', {
-						headers: {
-							'Authorization': `Bearer ${API_TOKEN}`
-						}
-					});
+					const response = await axios.get('https://api.github.com/rate_limit');
 					RICHIESTE_API_RIMANENTI = response.data.resources.core.remaining;	//Memorizzo il numero di richieste disponibili
 					var testo = "remaining API requests: " + RICHIESTE_API_RIMANENTI + ", Reset: " + new Date(response.data.resources.core.reset*1000).toLocaleString();
 					aggiungiNotifica('info','API REQUESTS',testo);						//notifica sulle richieste disponibili e tempo reset
@@ -2095,12 +2088,7 @@
 			//AGGIORNA LE VERSIONI: prende file, lo modifica e lo ricarica. modifica il campo VersioneInstallata (senza ricaricare tutto -> aggiornamento locale)
 			function aggiornaVersioni(APPLICAZIONE, nuovaVersione){
 				//effettuo la richesta api per ottenere il file
-				axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, 
-				{
-					headers: {
-						'Authorization': `Bearer ${API_TOKEN}`
-					}
-				})
+				axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`)
 				.then(function(response){
 					const sha = response.data.sha;
 					const content = response.data.content;
@@ -2126,11 +2114,6 @@
 							"message": `Aggiornamento ${APPLICAZIONE} alla versione ${nuovaVersione}`,
 							"content": encodedContent,
 							"sha": sha
-						},
-						{
-							headers:{
-								'Authorization': `Bearer ${API_TOKEN}`
-							}
 						})
 						.then(function(response){
 							
