@@ -24,6 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
+/*	-inizializza e chiude server
+*/
+
 #include <switch.h>
 extern "C" {
 #include "mongoose.h"
@@ -82,7 +85,7 @@ static void initWebServer(void) {
   mg_mgr_init(&mgr, NULL);
   nc = mg_bind(&mgr, httpServerPort, ev_handler);
   mg_set_protocol_http_websocket(nc);
-  httpServerOpts.document_root = "romfs:/webapp";		//PAGINA INIZIALE
+  httpServerOpts.document_root = "sdmc:/switch/NXUpdateTracker";		//PAGINA INIZIALE
 }
 
 //entry point. gestisco creazione server

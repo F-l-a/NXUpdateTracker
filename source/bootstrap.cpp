@@ -1,28 +1,11 @@
-/*
- *   This file is part of nx-spa
- *   Copyright (C) 2023 Bernardo Giordano
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
- *       * Requiring preservation of specified reasonable legal notices or
- *         author attributions in that material or in the Appropriate Legal
- *         Notices displayed by works containing it.
- *       * Prohibiting misrepresentation of the origin of that material,
- *         or requiring that modified versions of such material be marked in
- *         reasonable ways as different from the original version.
+
+ /*	-controlla se sono in appletMode
+ *	-inizializza e chiude console
+ *	-inizializza e chiude romfs
+ *	-chiama inizializzazione e chiusura server
+ *	-aspetta input uscita in caso di errori
  */
+ 
 
 #include <stdio.h>
 #include <switch.h>
@@ -32,6 +15,8 @@
 bool appInit() {				
 
 	consoleInit(NULL);			//inizializzo la console
+	consoleDebugInit(debugDevice_CONSOLE);
+
 	
 	printf(CONSOLE_YELLOW);
 	printf("  _   ___   ___    _           _       _    _______             _              \n");
@@ -54,8 +39,11 @@ bool appInit() {
    
 	svcSleepThread(0ull);	//aspetto per visualizzare i messaggi sulla console
 	
-	romfsInit();					//monto il romFS dell'app corrente
-  
+	Result rc = romfsInit();					//monto il romFS dell'app corrente
+	if (R_FAILED(rc)){
+        printf(CONSOLE_RED "\nERR: romfsInit: %08X\n", rc);
+	}
+	
 	if (!networkInit()) {			//crea il web server
 		return false;
 	}								//ritorna lo stato
@@ -66,7 +54,6 @@ bool appInit() {
 int appExit(int code) {	
  
 	if(code != 0){						//se esco con errore, ho la possibilità di fermare la console per leggere gli errori
-		
 		printf(CONSOLE_WHITE "\n\n\nPress " CONSOLE_CYAN "[" CONSOLE_RED "+ " CONSOLE_WHITE "or" CONSOLE_RED " - " CONSOLE_WHITE "or" CONSOLE_RED " B" CONSOLE_CYAN "]" CONSOLE_WHITE " to exit..");
 		consoleUpdate(NULL);			//aggiorno la console
 		
@@ -82,6 +69,7 @@ int appExit(int code) {
 			}
 		}while(true);
 	}else{
+		printf(CONSOLE_GREEN "\nExiting..");
 		consoleUpdate(NULL);			//aggiorno la console
 		svcSleepThread(0ull);			//aspetto per visualizzare i messaggi sulla console
 	}

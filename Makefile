@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	NXUpdateTracker
 APP_AUTHOR	:=	F-l-a
-APP_VERSION	:=	1.0
+APP_VERSION	:=	v1.0
 TARGET		:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR		:=	out
 BUILD		:=	build
@@ -43,6 +43,7 @@ FORMATINCLUDES	:= include
 INCLUDES	:=	$(FORMATINCLUDES) 3rd-party/include
 EXEFS_SRC	:=	exefs_src
 ROMFS		:=	romfs
+ICON		:=	icon.jpg
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -151,16 +152,13 @@ endif
 #---------------------------------------------------------------------------------
 all: $(BUILD)
 
-#here v
 $(BUILD): 
 	@[ -d $@ ] || mkdir -p $@ $(BUILD) $(OUTDIR)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	
 	#aggiunto:
-	mkdir -p open_and_copy_to_sd/switch
-	mkdir -p open_and_copy_to_sd/config/$(APP_TITLE)
-	cp out/$(APP_TITLE).nro open_and_copy_to_sd/switch/$(APP_TITLE).nro
-	cp githubInfo.ini open_and_copy_to_sd/config/$(APP_TITLE)/githubInfo.ini
+	mkdir -p open_and_copy_to_sd/switch/$(APP_TITLE)
+	cp out/$(APP_TITLE).nro open_and_copy_to_sd/switch/$(APP_TITLE)/$(APP_TITLE).nro
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
