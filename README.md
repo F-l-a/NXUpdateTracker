@@ -6,5 +6,6 @@
 </p>
 
 ---
-Guide and Documentation [here](https://github.com/F-l-a/NXUpdateTracker/wiki)
-  
+- Guide and Documentation [here](https://github.com/F-l-a/NXUpdateTracker/wiki)
+
+- Demo Version [here](https://f-l-a.github.io/NXUpdateTracker/) - Try it!
