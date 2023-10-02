@@ -28,3 +28,7 @@ I would like to thank these people who gave me the possibility to bring this pro
 - switchbrew for [libnx](https://github.com/switchbrew/libnx)
 - BernardoGiordano for [nx-spa](https://github.com/BernardoGiordano/nx-spa), the project I partially used as a reference for mine. I used his approach to open a web server with Mongoose and I used some of his files for some parts of the process
 - F-l-a ([me](https://www.youtube.com/watch?v=NfF3bThOW0Q)) for the html and javascript (and some c++) parts. I learned a lot doing this (and spending half the time on some stupid things because I couldn't get it to work. But that's what the game is about, right?)
+
+---
+### Other links
+- [GBAtemp thread](https://gbatemp.net/threads/nxupdatetracker.640650/)
