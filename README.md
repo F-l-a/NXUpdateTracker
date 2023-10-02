@@ -16,10 +16,11 @@
 - Loads the currently installed version number from a JSON file hosted on Github, like [this](https://github.com/F-l-a/FlaSwitch/blob/main/Versions.json)
 - Compares the installed and the latest version numbers, with the possibility to only list the outdated apps that have an update available
 - Updates the installed version numbers modifying the JSON directly from the app
-- Lists some important files needed by the apps to work properly. Some of the files are accessible via google drive links
+- Lists some important files needed by the apps to work properly. Some of the files are accessible via Google Drive links
 - Accessible everywhere: .nro version for the switch, standalone .html version for every browser
 - Customizable: you can modify the html to include other apps/assets/links
-
+- Does NOT install the updates itself, nor it downloads them
+  
 ---
 ## Credits
 I would like to thank these people who gave me the possibility to bring this project to you:
