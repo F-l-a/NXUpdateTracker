@@ -26,7 +26,7 @@ bool appInit() {
     printf(" | |\\  |/ . \\| |__| | |_) | (_| | (_| | ||  __/ | | | (_| | (__|   <  __/ |    \n");
     printf(" |_| \\_/_/ \\_\\\\____/| .__/ \\__,_|\\__,_|\\__\\___|_|_|  \\__,_|\\___|_|\\_\\___|_|    \n");
     printf("                    | |                                                        \n");
-    printf("                    |_|                          " CONSOLE_GREEN "              F-l-a " CONSOLE_WHITE "-" CONSOLE_RED " v1.0    \n");
+    printf("                    |_|                          " CONSOLE_GREEN "              F-l-a " CONSOLE_WHITE "-" CONSOLE_RED " v2.0    \n");
 	printf(CONSOLE_CYAN "________________________________________________________________________________\n");
 	consoleUpdate(NULL);			//aggiorno la console
 
