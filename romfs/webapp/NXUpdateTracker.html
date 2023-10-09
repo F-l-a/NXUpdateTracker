@@ -5,35 +5,34 @@
 			////////////////////////////////////////////
 			//MODIFY HERE vvvv
 			//Github info - Insert your info here. DON'T SHARE THIS FILE WITH YOUR API_TOKEN. Delete it first. (If you didn't, delete it form https://github.com/settings/tokens )
-			var API_TOKEN = "INSERT_API_TOKEN_HERE";	//example: const API_TOKEN = "qwertyuiop1234567890";
-			var OWNER = "YOUR_USERNAME_HERE";			//example: const OWNER = "F-l-a";
-			var REPO = "YOUR_REPOSITORY_HERE";			//example: const REPO = "NXUpdateTracker";
-			var FILE_PATH = "FILE_PATH_HERE";			//example: const FILE_PATH = "Versions.json";
+			var API_TOKEN = "INSERT_API_TOKEN_HERE";	//example: var API_TOKEN = "qwertyuiop1234567890";
+			var OWNER = "INSERT_USER_NAME_HERE";			//example: var OWNER = "F-l-a";
+			var REPO = "INSERT_REPO_NAME_HERE";			//example: var REPO = "NXUpdateTracker";
+			var FILE_PATH = "INSERT_FILE_PATH_HERE";			//example: var FILE_PATH = "Versions.json";
+			var FILE_VISIBILITY = "INSERT_FILE_VISIBILITY_HERE";	//example: var FILE_VISIBILITY = "Visibility.json";
 			//MODIFY HERE ^^^^^
 			////////////////////////////////////////////
-			
-			var HASH;
 		</script>
 		
 		<title>NXUpdateTracker</title>
-		<script>const APP_VERSION = "v1.0"</script>
 		<link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/icon_256x256.jpg">
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		
+		<script src="https://cdn.jsdelivr.net/npm/block-ui@2.70.1/jquery.blockUI.min.js"></script>
+
 		<script src="credentialsLoader.js"></script>
 		
 		<script src="https://unpkg.com/polipop/dist/polipop.min.js"></script>
 		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.core.css"/>
-		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.default.css"/>
-		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.minimal.css">
 		<link rel="stylesheet" href="https://unpkg.com/polipop/dist/css/polipop.compact.css">
 		<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+		
 		<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Coda'>
-		<!-- commenti in style con /* commento */ -->		
+		
+		<!-- commenti in style con /* commento */ -->
 		<style>
 		
 			table {border-collapse: collapse; width: 100%;}
@@ -52,6 +51,18 @@
 			img {width:100%;display: block;margin: 0 auto;}
 			input{width:100%;display: block;margin: 0 auto; tabindex:-1}
 			p {margin: 5px;}
+			input[type="checkbox"]{
+				vertical-align: middle; /* Center the contents vertically */
+				margin:5px;
+				padding:0;
+				width:15px;
+				height:15px;
+				display:inline-block;
+			}
+			label{
+				vertical-align: middle; /* Center the contents vertically */
+				display:inline-block;
+			}
 			
 			/* custom abbr */
 			@media screen and (min-width: 0px) {
@@ -85,54 +96,17 @@
 				}
 			}
 			
-			
-			.iconaFlag{
-				width:50px;
-				height:50px;
-				border:none!important;
-				cursor:pointer;
-			}
-			
-			.tabellaDettagli{
-				font-family:'Consolas';
-				font-size:12px;
-				margin-top:5px;
-				margin-bottom:0px;
-			}
-			
-			.colonnaMinima{		/* applica uno stile 'Wrap-content' */
-				width:1px;
-				white-space:nowrap;
-			}
-			
-			.rigaApp{		/* applica uno stile 'Wrap-content' */
-				height:1px;
-				white-space:nowrap;
-			}
-			
-			.fullImage{
-				width:100%;
-			}
-			
-			.colonnaVersioni{
-				padding:0;
-				margin:0;
-				border-style:hidden!important;
-			}
-			
-			.iconaVersioni{
-				width:20px;
-				height:20px;
-				display:inline-block;
-			}
-			
 			.iconaModificaVersione{
-				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/update.png");	/*alt: UPD	https://cdn-icons-png.flaticon.com/512/5278/5278646.png */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/update.png");		/*alt: UPD	https://cdn-icons-png.flaticon.com/512/5278/5278646.png */
 				cursor:pointer;
 			}
 			
 			.iconaUltimaVersione{
-				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/cloud.png");	/*alt: CLD	https://cdn-icons-png.flaticon.com/512/2377/2377385.png */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/cloud.png");		/*alt: CLD	https://cdn-icons-png.flaticon.com/512/2377/2377385.png */
+			}
+			
+			.iconaToggleMenuVisibilita{
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/checklist.png");	/* https://www.flaticon.com/free-icon/checklist-square-interface-symbol-of-rounded-corners_39862 */
 			}
 			
 			.iconaVersioneInstallata{
@@ -144,41 +118,23 @@
 			}
 			
 			.iconaConfigurazioneRichiesta{
-				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/file.png");		/*alt: CNF	https://cdn-icons-png.flaticon.com/512/6671/6671961.png */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/file.png");			/*alt: CNF	https://cdn-icons-png.flaticon.com/512/6671/6671961.png */
 			}
 			
 			.iconaInfo{
-				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/info.png");		/*alt: INF	https://img.icons8.com/?size=512&id=63308&format=png */
-			}
-			
-			.captionTabellaDettagli{
-				text-align:left;
-				padding-left:8px;
-			}
-			
-			.buttonMenu{
-				display:inline-block;
-				cursor:pointer;
-				border:none!important;
-				width:50px;
-				height:50px;
-				margin:0px!important;
-			}
-			
-			.no-border{
-				border:none!important;
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/info.png");			/*alt: INF	https://img.icons8.com/?size=512&id=63308&format=png */
 			}
 			
 			.iconaDiProva{
-			content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/save.png");				/* https://cdn-icons-png.flaticon.com/512/4856/4856668.png */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/save.png");			/* https://cdn-icons-png.flaticon.com/512/4856/4856668.png */
 			}
 			
 			.iconaHelp{
-			content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/helpIcon.png");				/* https://www.flaticon.com/free-icon/question_471664 */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/helpIcon.png");		/* https://www.flaticon.com/free-icon/question_471664 */
 			}
 			
 			#HideSameVersionButtonImage{
-				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/OcchioBarrato.png");			/* https://www.flaticon.com/free-icon/eye-scanner_2012977 */
+				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/OcchioBarrato.png");/* https://www.flaticon.com/free-icon/eye-scanner_2012977 */
 			}
 			
 			#ShowSameVersionButtonImage{
@@ -205,23 +161,96 @@
 				content:url("https://raw.githubusercontent.com/F-l-a/FlaSwitch/main/res/credentials.png");	/* https://www.flaticon.com/free-icon/password_348544 */
 			}
 			
+			.colonnaVersioni{
+				padding:0;
+				margin:0;
+				border-style:hidden!important;
+			}
+			
+			.iconaVersioni{
+				width:20px;
+				height:20px;
+				display:inline-block;
+			}
+			
+			.iconaFlag{
+				width:50px;
+				height:50px;
+				border:none!important;
+				cursor:pointer;
+			}
+
+			.captionTabellaDettagli{
+				text-align:left;
+				padding-left:8px;
+			}
+			
+			.tabellaDettagli{
+				font-family:'Consolas';
+				font-size:12px;
+				margin-top:5px;
+				margin-bottom:0px;
+			}
+			
+			.buttonMenu{
+				display:inline-block;
+				cursor:pointer;
+				border:none!important;
+				width:50px;
+				height:50px;
+				margin:0px!important;
+			}
+			
+			.colonnaMinima{		/* applica uno stile 'Wrap-content' */
+				width:1px;
+				white-space:nowrap;
+			}
+			
+			.rigaApp{		/* applica uno stile 'Wrap-content' */
+				height:1px;
+				white-space:nowrap;
+			}
+			
+			.pulsante-minimo{
+				padding: 5px 10px;
+				font-size: inherit;
+			}
+			
 			.no-space{
 				margin: 0px!important;
 				padding-top:0px!important;
 				padding-bottom:0px!important;
 			}
 			
-			.vertical-center {
-				margin: 0;
+			.no-border{
+				border:none!important;
+			}
+
+			.fullImage{
+				width:100%;
+			}
+		
+			.vertical-center{
+				vertical-align: middle;
+				height: 100%;
+				padding: 0;
+			}
+
+			.horizontal-center{
+				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+			
+			.centered-div{
 				position: absolute;
 				top: 50%;
-				-ms-transform: translateY(-50%);
-				transform: translateY(-50%);
+				left: 50%;
+				transform: translate(-50%, -50%);
 			}
+			
 		</style>
-		
 	</head>
-	
 	<body><center>
 
 		<!-- HEADER/MENU -->
@@ -243,6 +272,7 @@
 						<center>
 							<div class="strutturaTabella no-border no-space">
 								<div class="strutturaTabella buttonMenu no-space"><abbr data-title="Help page" tabindex="0" onclick="apriPagina('https://github.com/F-l-a/NXUpdateTracker/wiki')" onkeydown="apriPagina('https://github.com/F-l-a/NXUpdateTracker/wiki', event)"><img class="iconaHelp" alt="Help"></abbr></div>
+								<div class="strutturaTabella buttonMenu no-space"><abbr data-title="Hide/Show apps" tabindex="0" onclick="toggleMenuVisibilita()" onkeydown="toggleMenuVisibilita(event)"><img class="iconaToggleMenuVisibilita" alt="Show/Hide Apps"></abbr></div>
 								<div class="strutturaTabella buttonMenu no-space" id="ContainerPulsanteToggleAppAggiornate" hidden><abbr data-title="Show/Hide Updated Apps" tabindex="0" onclick="toggleAppAggiornate(this.id)" onkeydown="toggleAppAggiornate(this.id, event)" id="HideSameVersionButton"><img id="HideSameVersionButtonImage" alt="Hide Updated Apps"></abbr></div>
 								<div class="strutturaTabella buttonMenu no-space"><abbr data-title="Show Versions" tabindex="0" id="PulsanteMostraVersioni"><img id="IconaMostraVersioni" alt="ShowVer"></abbr></div>
 								<div class="strutturaTabella buttonMenu no-space"><abbr data-title="Show API Limits" tabindex="0" id="PulsanteMostraLimiteAPI"><img id="IconaMostraLimiteAPI" alt="API Limits"></abbr></div>
@@ -258,7 +288,99 @@
 	<!-- prende spazio - inizio -->
 		<div class="strutturaTabella" style="height:80px;margin-bottom:10px;background-color:#d9d9fa;"></div>
 	<!-- prende spazio - fine-->
+		
+	<!-- PANNELLO VISIBILITÀ - inizio -->
+		<div class="strutturaTabella centered-div" hidden id="PannelloVisibilita" style="position:fixed;z-index:1002;width:88%;background-color:lavender;border:2px solid #8d8df7">
+			<p style="border-bottom:2px solid #8d8df7">Select the homebrews you want to see</p>
+			<table style="width:100%" class="caption-top" id="tabellaCheckboxMain">
+				<caption class="no-space" style="text-align:center;background-color:#d9d9fa">MAIN</caption>
+				<tr class="no-hover">
+					<td style="width:20%"></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="NintendoHOSVersion_checkbox" type="checkbox" checked><label id="NintendoHOSVersion_label" for="NintendoHOSVersion_checkbox">Horizon OS</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Atmosphere-NX/Atmosphere_checkbox" type="checkbox" checked><label id="Atmosphere-NX/Atmosphere_label" for="Atmosphere-NX/Atmosphere_checkbox">Atmosphere</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="CTCaer/hekate_checkbox" type="checkbox" checked><label id="CTCaer/hekate_label" for="CTCaer/hekate_checkbox">Hekate</label></td>
+					<td style="width:20%"></td>
+				</tr>
+			</table>
+			
+			<table style="width:100%" class="caption-top" id="tabellaCheckboxPayloads">
+				<caption class="no-space" style="text-align:center;background-color:#d9d9fa">PAYLOADS</caption>
+				<tr class="no-hover">
+					<td style="width:20%"></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="suchmememanyskill/TegraExplorer_checkbox" type="checkbox" checked><label id="suchmememanyskill/TegraExplorer_label" for="suchmememanyskill/TegraExplorer_checkbox">TegraExplorer</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="shchmue/Lockpick_RCM_checkbox" type="checkbox" checked><label id="shchmue/Lockpick_RCM_label" for="shchmue/Lockpick_RCM_checkbox">LockpickRCM</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Atmosphere/Fusee_checkbox" type="checkbox" checked><label id="Atmosphere/Fusee_label" for="Atmosphere/Fusee_checkbox">Fusee</label></td>
+					<td style="width:20%"></td>
+				</tr>
+			</table>
+			
+			<table style="width:100%;" class="caption-top" id="tabellaCheckboxHomebrew">
+				<caption class="no-space" style="text-align:center;background-color:#d9d9fa">HOMEBREW</caption>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="mtheall/ftpd_checkbox" type="checkbox" checked><label id="mtheall/ftpd_label" for="mtheall/ftpd_checkbox">FTPd</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="J-D-K/JKSV_checkbox" type="checkbox" checked><label id="J-D-K/JKSV_label" for="J-D-K/JKSV_checkbox">JKSV</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="blawar/tinfoil_checkbox" type="checkbox" checked><label id="blawar/tinfoil_label" for="blawar/tinfoil_checkbox">Tinfoil</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Huntereb/Awoo-Installer_checkbox" type="checkbox" checked><label id="Huntereb/Awoo-Installer_label" for="Huntereb/Awoo-Installer_checkbox">Awoo Installer</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="rashevskyv/dbi_checkbox" type="checkbox" checked><label id="rashevskyv/dbi_label" for="rashevskyv/dbi_checkbox">DBI</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="XorTroll/Goldleaf_checkbox" type="checkbox" checked><label id="XorTroll/Goldleaf_label" for="XorTroll/Goldleaf_checkbox">Goldleaf</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="joel16/NX-Shell_checkbox" type="checkbox" checked><label id="joel16/NX-Shell_label" for="joel16/NX-Shell_checkbox">NX-Shell</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="vgmoose/vgedit_checkbox" type="checkbox" checked><label id="vgmoose/vgedit_label" for="vgmoose/vgedit_checkbox">vgedit</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="tallbl0nde/NX-Activity-Log_checkbox" type="checkbox" checked><label id="tallbl0nde/NX-Activity-Log_label" for="tallbl0nde/NX-Activity-Log_checkbox">NX Activity Log</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="fortheusers/hb-appstore_checkbox" type="checkbox" checked><label id="fortheusers/hb-appstore_label" for="fortheusers/hb-appstore_checkbox">HB App Store</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="meganukebmp/Switch_90DNS_tester_checkbox" type="checkbox" checked><label id="meganukebmp/Switch_90DNS_tester_label" for="meganukebmp/Switch_90DNS_tester_checkbox">90DNS Tester</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="WerWolv/Hekate-Toolbox_checkbox" type="checkbox" checked><label id="WerWolv/Hekate-Toolbox_label" for="WerWolv/Hekate-Toolbox_checkbox">Hekate Toolbox</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="iUltimateLP/NXGallery_checkbox" type="checkbox" checked><label id="iUltimateLP/NXGallery_label" for="iUltimateLP/NXGallery_checkbox">NXGallery</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="HookedBehemoth/ShareNX_checkbox" type="checkbox" checked><label id="HookedBehemoth/ShareNX_label" for="HookedBehemoth/ShareNX_checkbox">ShareNX</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="exelix11/SwitchThemeInjector_checkbox" type="checkbox" checked><label id="exelix11/SwitchThemeInjector_label" for="exelix11/SwitchThemeInjector_checkbox">NX Themes Installer</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="HamletDuFromage/aio-switch-updater_checkbox" type="checkbox" checked><label id="HamletDuFromage/aio-switch-updater_label" for="HamletDuFromage/aio-switch-updater_checkbox">AIO Switch Updater</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="tomvita/EdiZon-SE_checkbox" type="checkbox" checked><label id="tomvita/EdiZon-SE_label" for="tomvita/EdiZon-SE_checkbox">Edizon SE</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="libretro/RetroArch_checkbox" type="checkbox" checked><label id="libretro/RetroArch_label" for="libretro/RetroArch_checkbox">RetroArch</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="crc-32/BrowseNX_checkbox" type="checkbox" checked><label id="crc-32/BrowseNX_label" for="crc-32/BrowseNX_checkbox">Browser</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="ITotalJustice/untitled_checkbox" type="checkbox" checked><label id="ITotalJustice/untitled_label" for="ITotalJustice/untitled_checkbox">untitled</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Chrscool8/Homebrew-Details_checkbox" type="checkbox" checked><label id="Chrscool8/Homebrew-Details_label" for="Chrscool8/Homebrew-Details_checkbox">Homebrew-Details</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="switchbrew/nx-hbmenu_checkbox" type="checkbox" checked><label id="switchbrew/nx-hbmenu_label" for="switchbrew/nx-hbmenu_checkbox">HB Menu</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Atmosphere/Haze_checkbox" type="checkbox" checked><label id="Atmosphere/Haze_label" for="Atmosphere/Haze_checkbox">Haze</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Atmosphere/Daybreak_checkbox" type="checkbox" checked><label id="Atmosphere/Daybreak_label" for="Atmosphere/Daybreak_checkbox">Daybreak</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Atmosphere/Reboot2Payload_checkbox" type="checkbox" checked><label id="Atmosphere/Reboot2Payload_label" for="Atmosphere/Reboot2Payload_checkbox">Reboot to Payload</label></td>
+				</tr>
+			</table>
+			
+			<table style="width:100%" class="caption-top" id="tabellaCheckboxSysmodulesOverlays">
+				<caption class="no-space" style="text-align:center;background-color:#d9d9fa">SYSMODULES</caption>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="WerWolv/nx-ovlloader_checkbox" type="checkbox" checked><label id="WerWolv/nx-ovlloader_label" for="WerWolv/nx-ovlloader_checkbox">nx-ovlloader</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="WerWolv/Tesla-Menu_checkbox" type="checkbox" checked><label id="WerWolv/Tesla-Menu_label" for="WerWolv/Tesla-Menu_checkbox">Tesla Menu</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="Hartie95/fastCFWswitch_checkbox" type="checkbox" checked><label id="Hartie95/fastCFWswitch_label" for="Hartie95/fastCFWswitch_checkbox">fastCFWswitch</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="masagrator/SaltyNX_checkbox" type="checkbox" checked><label id="masagrator/SaltyNX_label" for="masagrator/SaltyNX_checkbox">SaltyNX</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="masagrator/Status-Monitor-Overlay_checkbox" type="checkbox" checked><label id="masagrator/Status-Monitor-Overlay_label" for="masagrator/Status-Monitor-Overlay_checkbox">Status Monitor</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="WerWolv/ovl-sysmodules_checkbox" type="checkbox" checked><label id="WerWolv/ovl-sysmodules_label" for="WerWolv/ovl-sysmodules_checkbox">ovlSysmodules</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="cathery/sys-ftpd_checkbox" type="checkbox" checked><label id="cathery/sys-ftpd_label" for="cathery/sys-ftpd_checkbox">sys-ftpd-light</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="HookedBehemoth/ShareNX-Overlay_checkbox" type="checkbox" checked><label id="HookedBehemoth/ShareNX-Overlay_label" for="HookedBehemoth/ShareNX-Overlay_checkbox">ShareNX-Overlay</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="averne/Fizeau_checkbox" type="checkbox" checked><label id="averne/Fizeau_label" for="averne/Fizeau_checkbox">Fizeau</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="XorTroll/emuiibo_checkbox" type="checkbox" checked><label id="XorTroll/emuiibo_label" for="XorTroll/emuiibo_checkbox">emuiibo</label></td>
+				</tr>
+				<tr class="no-hover">
+					<td style="width:20%"><input class="checkBoxVisibilita" id="nedex/QuickNTP_checkbox" type="checkbox" checked><label id="nedex/QuickNTP_label" for="nedex/QuickNTP_checkbox">QUICK NTP</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="exelix11/SysDVR_checkbox" type="checkbox" checked><label id="exelix11/SysDVR_label" for="exelix11/SysDVR_checkbox">SysDVR</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="spacemeowx2/ldn_mitm_checkbox" type="checkbox" checked><label id="spacemeowx2/ldn_mitm_label" for="spacemeowx2/ldn_mitm_checkbox">ldn_mitm</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="masagrator/ReverseNX-RT_checkbox" type="checkbox" checked><label id="masagrator/ReverseNX-RT_label" for="masagrator/ReverseNX-RT_checkbox">ReverseNX-RT</label></td>
+					<td style="width:20%"><input class="checkBoxVisibilita" id="ndeadly/MissionControl_checkbox" type="checkbox" checked><label id="ndeadly/MissionControl_label" for="ndeadly/MissionControl_checkbox">Mission Control</label></td>
+				</tr>
+			</table>
 
+			<button class="pulsante-minimo" onclick="gestisciModificheMenuVisibilita(false)">Confirm</button><p style="display:inline-block"></p><button class="pulsante-minimo" onclick="gestisciModificheMenuVisibilita(true)">Save on Github</button>
+		</div>
+	
 		<!-- LINKS -->
 		<div class="strutturaTabella">
 			<table style="width:100%" class="caption-top">
@@ -273,17 +395,16 @@
 		</div>
 		
 		<!-- MAIN -->
-		<div class="strutturaTabella">
+		<div class="strutturaTabella" id="tabellaMain">
 			<table style="width:100%" class="caption-top">
 				<caption style="text-align:center">MAIN</caption>
 				<!-- INTESTAZIONE -->
-				<tr>
+				<tr id="rigaIntestazioneMain">
 					<th style="width:10%;text-align:center">ICON</th>
 					<th style="width:20%">NAME - PROGRAMID</th>
 					<th style="width:50px">FLAGS</th>
 					<th>NOTES</th>
 				</tr>
-
 
 				<!-- HOS FIRMWARE NintendoHOSVersion -->
 				<tr class="RigaApp" id="NintendoHOSVersion">
@@ -311,7 +432,6 @@
 					</td>
 				</tr>
 				
-				
 				<!-- ATMOSPHERE Atmosphere-NX/Atmosphere -->
 				<tr class="RigaApp" id="Atmosphere-NX/Atmosphere">
 					<td><a href=""><img class="fullImage" src="https://avatars.githubusercontent.com/u/37918415?s=200&v=4" alt="PicError"></a></td>
@@ -336,12 +456,12 @@
 						CUSTOM FIRMWARE
 						<div id='Atmosphere-NX/Atmosphere_TabellaDettagli' class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1JBVYKOee8FdMN6wRAypLhOIFYvT__2Er?usp=sharing" target="_blank">ATMOSPHERE</a></caption>
+								<caption class="captionTabellaDettagli">ATMOSPHERE</caption>
 								<td class="colonnaMinima">
-									/atmosphere/config/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPMANPafQGPISy4DtdCI/view?usp=share_link" target="_blank">override_config.ini</a><br>
-									/atmosphere/config/<a href="https://drive.google.com/file/d/1icTLLS2H8ogIqXrOQFdrQQ643eCYVnj9/view?usp=share_link" target="_blank">system_settings.ini</a><br>
-									/atmosphere/host/<a href="https://drive.google.com/file/d/1OX7KKA0YzL3UwJVMwWH95AtWsrvn7inG/view?usp=share_link" target="_blank">default.txt</a><br>
-									/<a href="https://drive.google.com/file/d/1mqAFVUTgqJSBYbGXrlFQt7setpONxMqW/view?usp=share_link" target="_blank">exosphere.ini</a>
+									/atmosphere/config/override_config.ini<br>
+									/atmosphere/config/system_settings.ini<br>
+									/atmosphere/host/<a href="https://rentry.org/ExosphereDNSMITM#dns-mitm" target="_blank">default.txt</a><br>
+									/<a href="https://rentry.org/ExosphereDNSMITM#exosphere" target="_blank">exosphere.ini</a>
 								</td>
 								<td>
 									: Override (for HBMenu forwarder)<br>
@@ -379,11 +499,11 @@
 						CUSTOM BOOTLOADER
 						<div id="CTCaer/hekate_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1ceEu0C230z8wiALu5mg7TucqgJwjym_M?usp=share_link" target="_blank">HEKATE</a> (BOOTLOADER)</caption>
+								<caption class="captionTabellaDettagli">HEKATE (BOOTLOADER)</caption>
 								<td class="colonnaMinima">
-									/bootloader/ini/<a href="https://drive.google.com/file/d/1AQgh9hPa6io03eeKM9FOJYOjzEBfVlvl/view?usp=share_link" target="_blank">00-android.ini</a><br>
-									/bootloader/res/<a href="https://drive.google.com/file/d/1X72zFBHwEdKotvYyhGEnudKQrjKKKIfN/view?usp=share_link" target="_blank">emu_boot.bmp</a> + <a href="https://drive.google.com/file/d/1fqFLURxH2SNr2oBAgDHSXc81xYXO-OSO/view?usp=share_link" target="_blank">stock_boot.bmp</a><br>
-									/bootloader/<a href="https://drive.google.com/file/d/1TW0NMT7Bdz9ws5kYoHyRNXvzSZX7uh_i/view?usp=share_link" target="_blank">hekate_ipl.ini</a>
+									/bootloader/ini/00-android.ini<br>
+									/bootloader/res/emu_boot.bmp + stock_boot.bmp<br>
+									/bootloader/<a href="https://rentry.org/EristaEmuNAND#step-3" target="_blank">hekate_ipl.ini</a>
 								</td>
 								<td>
 									: Android boot entry<br>
@@ -396,8 +516,8 @@
 				</tr>
 
 				<!-- PAYLOADS -->
-				<tr><th colspan="4" style="text-align:left;padding-left:15%;font-size:80%;cursor:pointer;" id="MostraDettagliPayloads" onclick="mostraPayloads(this.id)" onkeydown="mostraPayloads(this.id, event)" tabindex="0">&or; SHOW PAYLOADS &or;</th></tr>
-				<tr>
+				<tr id="rigaPulsantePayloads"><th colspan="4" style="text-align:left;padding-left:15%;font-size:80%;cursor:pointer;" id="MostraDettagliPayloads" onclick="mostraPayloads(this.id)" onkeydown="mostraPayloads(this.id, event)" tabindex="0">&or; SHOW PAYLOADS &or;</th></tr>
+				<tr id="rigaPayloads">
 					<table style="display:none;" id="dettagliPayloads_TabellaDettagli">
 
 						<!-- INTESTAZIONE -->
@@ -444,8 +564,8 @@
 							<td>: key Derivation Payload</td>
 						</tr>
 						
-						<!-- FUSEE Atmosphere-NX/Atmosphere -->
-						<tr class="RigaAppND" id="NoID">
+						<!-- FUSEE Atmosphere-NX/Atmosphere Atmosphere/Fusee -->
+						<tr class="RigaAppND" id="Atmosphere/Fusee">
 							<td><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">fusee.bin</a></td>
 							<td>
 								<table style="width:100%">
@@ -467,7 +587,7 @@
 		</div>
 		
 		<!-- HOMEBREW -->
-		<div class="strutturaTabella">
+		<div class="strutturaTabella" id="tabellaHomebrew">
 			<table style="width:100%" class="caption-top">
 				<caption style="text-align:center">HOMEBREW</caption>
 				<!-- INTESTAZIONE -->
@@ -525,14 +645,14 @@
 						SAVE MANAGER
 						<div id="J-D-K/JKSV_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1KBAo5_qmYY2dMyULblmcvP8dUKpU4cWv?usp=sharing" target="_blank">JKSV</a></caption>
+								<caption class="captionTabellaDettagli">JKSV</caption>
 								<td class="colonnaMinima">
-									/config/JKSV/<a href="https://drive.google.com/file/d/1xYhopBxjC3-6zbCrEFvrmin6cpT9IPfc/view?usp=share_link" target="_blank">JKSV.cfg</a><br>
-									/<a href="https://drive.google.com/drive/folders/12NgpsB73Nm0-R8FmtBQMtvINxKyRfh5i?usp=share_link" target="_blank">JKSV</a>/<br>
+									/config/JKSV/JKSV.cfg<br>
+									/JKSV/<br>
 								</td>
 								<td>
 									: App custom settings<br>
-									: Save Files (13-04-2023)<br>
+									: Save Files<br>
 								</td>
 							</table>
 						</div>
@@ -563,17 +683,17 @@
 						ONLINE TITLE DOWNLOADER - MANAGER
 						<div id="blawar/tinfoil_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1dYVcEXdnGg7oOIgFqpk5Up9n8Euvr4XX?usp=share_link" target="_blank">TINFOIL</a></caption>
+								<caption class="captionTabellaDettagli">TINFOIL</caption>
 								<td class="colonnaMinima">
-									/switch/tinfoil/<a href="https://drive.google.com/file/d/1GT75s3bU-ruC2NcJ7kayvSBrBlGtb998/view?usp=share_link" target="_blank">credentials.json</a> --> <a href="https://sphynxinatorx.github.io/freefoil/" target="_blank">gdrive.token generator</a><br>
-									/switch/tinfoil/<a href="https://drive.google.com/file/d/1pz3f1ZVTmKudUDLdDOuFSRbu0WD2M45g/view?usp=share_link" target="_blank">locations.conf</a><br>
-									/switch/tinfoil/<a href="https://drive.google.com/file/d/1GUjTITuiBOfaTl2W28OZhEnrQHsgcQ7w/view?usp=share_link" target="_blank">options.json</a><br>
-									/switch/tinfoil/<a href="https://drive.google.com/drive/folders/1mvULPNn6FkTqI9YMloHDiAqdTGmGqxT_?usp=share_link" target="_blank">themes</a>/<br>
+									/switch/tinfoil/credentials.json --> <a href="https://sphynxinatorx.github.io/freefoil/" target="_blank">gdrive.token generator</a><br>
+									/switch/tinfoil/locations.conf<br>
+									/switch/tinfoil/options.json</a><br>
+									/switch/tinfoil/themes/<br>
 								</td>
 								<td>
-									: &#128274;Google Drive Access Configuration<br>
+									: Google Drive Access Configuration<br>
 									: Shops List<br>
-									: &#128274;Application Settings<br>
+									: Application Settings<br>
 									: Tinfoil Theme Folder<br>
 								</td>
 							</table>
@@ -720,11 +840,11 @@
 						DETAILED PLAY ACTIVITY (installed version is 1.5 from <a href="https://github.com/zdm65477730/NX-Activity-Log">here</a>)
 						<div id="tallbl0nde/NX-Activity-Log_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1heXPNDHicbPCeMSxyXAiC-rBVDCXRYXO?usp=share_link" target="_blank">NX ACTIVITY LOG</a></caption>
+								<caption class="captionTabellaDettagli">NX ACTIVITY LOG</caption>
 								<td class="colonnaMinima">
-									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1cEwwv3Dg5eIzeLgclL0npG5XA_JUpxv1/view?usp=share_link" target="_blank">background.png</a><br>
-									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1BG8v3j-3UaQvFN2Hq7IQ2rnZYODWL5UG/view?usp=share_link" target="_blank">config.ini</a><br>
-									/config/NX-Activity-Log/<a href="https://drive.google.com/file/d/1TzhC0QpZcEHL5Ym_U0TqX0__eBfRqGIR/view?usp=share_link" target="_blank">theme.ini</a><br>
+									/config/NX-Activity-Log/background.png<br>
+									/config/NX-Activity-Log/config.ini<br>
+									/config/NX-Activity-Log/theme.ini<br>
 								</td>
 								<td>
 									: Background Image<br>
@@ -829,9 +949,9 @@
 						SWITCH-LAN SCREENSHOT TRANSFER TOOL
 						<div id="iUltimateLP/NXGallery_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/10P2B1zwQK7cxTJXY7IdCvQ_sF4AvfNoT?usp=share_link" target="_blank">NX GALLERY</a></caption>
+								<caption class="captionTabellaDettagli">NX GALLERY</caption>
 								<td class="colonnaMinima">
-									/atmosphere/contents/010000000000100D/<a href="https://drive.google.com/file/d/13d4mR4sycLcpkC0vGV2MhtWUnkGP7yNp/view?usp=share_link" target="_blank">exefs.nsp</a><br>
+									/atmosphere/contents/010000000000100D/exefs.nsp<br>
 								</td>
 								<td>
 									: exefs file (replace ALBUM APPLET)<br>
@@ -888,10 +1008,10 @@
 						THEMES INSTALLER
 						<div id="exelix11/SwitchThemeInjector_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1IGK1PJqYdfXBWR43eTgecgAYK-kPSIgU?usp=share_link" target="_blank">NX THEMES INSTALLER</a></caption>
+								<caption class="captionTabellaDettagli">NX THEMES INSTALLER</caption>
 								<td class="colonnaMinima">
-									/themes/ThemezerNX/<a href="https://drive.google.com/drive/folders/18ktD86xSkhznc4LFKPdytoVK0vdlx22Z?usp=share_link" target="_blank">Themes</a>/<br>
-									/atmosphere/<a href="https://drive.google.com/drive/folders/17gU69Hv2NePmBQL6cXyQahulAXZZS9os?usp=share_link" target="_blank">contents</a>/&lt;TITLEID&gt;/romfs/message/*<br>
+									/themes/ThemezerNX/Themes/<br>
+									/atmosphere/contents</a>/&lt;TITLEID&gt;/romfs/message/*<br>
 								</td>
 								<td>
 									: System Theme Folder (Theme Files + Background)<br>
@@ -1064,10 +1184,10 @@
 						HOMEBREW MENU (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)
 						<div id="switchbrew/nx-hbmenu_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1JBVYKOee8FdMN6wRAypLhOIFYvT__2Er?usp=sharing" target="_blank">ATMOSPHERE</a> - HBMenu</caption>
+								<caption class="captionTabellaDettagli">ATMOSPHERE - HBMenu</caption>
 								<td class="colonnaMinima">
-									/atmosphere/config/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPMANPafQGPISy4DtdCI/view?usp=share_link" target="_blank">override_config.ini</a><br>
-									/atmosphere/<a href="https://drive.google.com/file/d/1BBA-i4FStZQsnBHq5hVkD5bctZFAmWAe/view?usp=share_link" target="_blank">HomeBrew Menu Forwarder_054023527B992000.nsp</a><br>								
+									/atmosphere/config/override_config.ini<br>
+									/atmosphere/HomeBrew Menu Forwarder_054023527B992000.nsp<br>								
 								</td>
 								<td>
 									: Override (for HBMenu forwarder)<br>
@@ -1078,8 +1198,8 @@
 					</td>
 				</tr>
 
-				<!-- HAZE (USB file transfer) Atmosphere-NX/Atmosphere -->
-				<tr class="RigaAppND" id="NoID1">
+				<!-- HAZE (USB file transfer) Atmosphere-NX/Atmosphere Atmosphere/Haze -->
+				<tr class="RigaAppND" id="Atmosphere/Haze">
 					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/haze/icon.jpg" alt="PicError"></a></td>
 					<td>
 						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Haze (USB File Transfer)</a></p>
@@ -1098,8 +1218,8 @@
 					<td>USB FILE TRANSFER (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)</td>
 				</tr>
 
-				<!-- DAYBREAK Atmosphere-NX/Atmosphere -->
-				<tr class="RigaAppND" id="NoID2">
+				<!-- DAYBREAK Atmosphere-NX/Atmosphere Atmosphere/Daybreak -->
+				<tr class="RigaAppND" id="Atmosphere/Daybreak">
 					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/daybreak/icon.jpg" alt="PicError"></a></td>
 					<td>
 						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Daybreak</a></p>
@@ -1118,8 +1238,8 @@
 					<td>FIRMWARE INSTALLER (part of <a href="#Atmosphere-NX/Atmosphere">ATMOSPHERE</a>)</td>
 				</tr>
 
-				<!-- REBOOT TO PAYLOAD Atmosphere-NX/Atmosphere -->
-				<tr class="RigaAppND" id="NoID3">
+				<!-- REBOOT TO PAYLOAD Atmosphere-NX/Atmosphere Atmosphere/Reboot2Payload-->
+				<tr class="RigaAppND" id="Atmosphere/Reboot2Payload">
 					<td><a href=""><img src="https://raw.githubusercontent.com/Atmosphere-NX/Atmosphere/master/troposphere/reboot_to_payload/reboot_to_payload.jpg" alt="PicError"></a></td>
 					<td>
 						<p><a href="https://github.com/Atmosphere-NX/Atmosphere" target="_blank">Reboot to Payload</a></p>
@@ -1141,9 +1261,8 @@
 			</table>
 		</div>
 		
-
 		<!-- SYSMODULES + OVERLAYS -->
-		<div class="strutturaTabella">
+		<div class="strutturaTabella" id="tabellaSysmodulesOverlays">
 			<table style="width:100%" class="caption-top">
 				<caption style="text-align:center">SYSMODULES + OVERLAYS</caption>
 				<!-- INTESTAZIONE -->
@@ -1224,9 +1343,9 @@
 						PAYLOAD LAUNCHER MENU
 						<div id="Hartie95/fastCFWswitch_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1WUp5l_nnQ0U2cNpp4IRfzQHBf8vsHpNy?usp=share_link" target="_blank">FAST CFW SWITCH</a></caption>
+								<caption class="captionTabellaDettagli">FAST CFW SWITCH</caption>
 								<td class="colonnaMinima">
-									/config/fastCFWswitch/<a href="https://drive.google.com/file/d/1IkUwnfDuyCewtzX62OFLjsiT42o_NLpC/view?usp=share_link" target="_blank">config.ini</a><br>
+									/config/fastCFWswitch/config.ini<br>
 								</td>
 								<td>
 									: Boot Entries<br>
@@ -1378,9 +1497,9 @@
 						BACKGROUND FTP SERVER
 						<div id="cathery/sys-ftpd_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1Bng8tpvpCznWiGNc0JIGFm4E30_UqSxj?usp=share_link" target="_blank">SYS-FTPD-LIGHT</a></caption>
+								<caption class="captionTabellaDettagli">SYS-FTPD-LIGHT</caption>
 								<td class="colonnaMinima">
-									/config/sys-ftpd/<a href="https://drive.google.com/file/d/1zHepg9dZByEdDuTyypbQD5S7gxNGqVek/view?usp=share_link" target="_blank">config.ini</a><br>
+									/config/sys-ftpd/config.ini<br>
 								</td>
 								<td>
 									: Username + Password File<br>
@@ -1437,9 +1556,9 @@
 						SCREEN COLOR FILTER - overlay (+channel)
 						<div id="averne/Fizeau_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1NWVAbaN2kwBLxKklylnM45b76ea2OP10?usp=share_link" target="_blank">FIZEAU</a></caption>
+								<caption class="captionTabellaDettagli">FIZEAU</caption>
 								<td class="colonnaMinima">
-									/config/Fizeau/<a href="https://drive.google.com/file/d/1tQyOQyQStZikTpGSLMKxeOtxi_M8ZDcV/view?usp=share_link" target="_blank">config.ini</a><br>
+									/config/Fizeau/config.ini<br>
 								</td>
 								<td>
 									: Configuration File<br>
@@ -1473,9 +1592,9 @@
 						VIRTUAL AMIIBO EMULATION
 						<div id="XorTroll/emuiibo_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/17efNjyNimJvQycwJ5IU-LDkISgE-QhTl?usp=share_link" target="_blank">EMUIIBO</a></caption>
+								<caption class="captionTabellaDettagli">EMUIIBO</caption>
 								<td class="colonnaMinima">
-									/emuiibo/<a href="https://drive.google.com/file/d/144tA2TYUTXCtTPM" target="_blank">amiibo</a>/<br>
+									/emuiibo/amiibo/<br>
 								</td>
 								<td>
 									: Virtual Amiibo files<br>
@@ -1579,15 +1698,13 @@
 						REDIRECT WIRELESS CONNECTION TO LAN MODE CONNECTION
 						<div id="spacemeowx2/ldn_mitm_TabellaDettagli" class="strutturaTabella tabellaDettagli" style="display:none">
 							<table style="width:100%" class="caption-top">
-								<caption class="captionTabellaDettagli">&#128274;<a href="https://drive.google.com/drive/folders/1OB67zy_qCpndOGQ8PlC3tZdToBTenkkW?usp=share_link" target="_blank">LDN MITM</a></caption>
+								<caption class="captionTabellaDettagli">LDN MITM</caption>
 								<td class="colonnaMinima">
 									<a href="https://rentry.org/TeknikLAN" target="_blank">TeknikLAN</a><br>
-									<a href="https://drive.google.com/file/d/19IS-rIcsxXlX43cO-OhpAf9wK_XnlLX5/view?usp=share_link" target="_blank">LAN.txt</a><br>
 									<a href="http://www.lan-play.com" target="_blank">LanPlay</a><br>
 								</td>
 								<td>
 									: Config Guide<br>
-									: Command<br>
 									: Game - Server List
 								</td>
 							</table>
@@ -1668,83 +1785,48 @@
 			</table>
 		</div>
 		
-		
 		<!-- ALTRA TABELLA -->
 		</center>
-		<!-- EXTRA -->
-		<div class="strutturaTabella" style="border-style:hidden">
-			<table style="width:1px;white-space:nowrap;border:1px solid #ddd;" class="caption-top">
-				<caption class="captionTabellaDettagli" style="text-align:center">EXTRA</caption>
-				<tr>
-					<td><a href="https://drive.google.com/drive/folders/10HY0tkxJH0trS3i23P0CKe8yPcQeL5wI?usp=share_link" target="_blank">&#128274;KEYS + PRODINFO</a></td>
-				</tr>
-				<tr>
-					<td><a href="https://github.com/F-l-a/FlaSwitch/blob/main/Versions.json" target="_blank">F-l-a/FlaSwitch/Versions.json</a></td>
-				</tr>
-			</table>
-		</div>
-		
 		
 		<h2>NOTES</h2>		
 		<pre>	FILEPATH
-		/Android : Official Android Folder
+		/(root)
+		├── Android: Official Android Folder
+		├── atmosphere: Atmosphere Custom Firmware Folder
+		│   └── hosts
+		│       └── default.txt: Anti-ban (DNS MITM file for ATMOSPHERE emuMMC)
+		├── bootloader: Hekate Folder
+		│   └── hekate_ipl.ini: .ini File for Hekate. Manage "Launch" button entries
+		├── config: .ini files for Homebrews Apps (or Overlays)
+		├── Download : Android Download folder
+		├── emuiibo : Emuiibo virtual amiibos folder
+		├── emuMMC: EmuNand Folder
+		├── JKSV: backup games savefiles folder
+		├── Nintendo : Official Nintendo folder (Album + game savefiles)
+		├── retroarch : RetroArch folder
+		├── SaltySD : SaltySD folder
+		├── switch: Homebrews Folder
+		├── switchroot: Android configuration (Android Payload and Joycons BT Dump)
+		├── tegraexplorer: Tegra Explorer Folder (Tegra Explorer Scripts)
+		├── themes: Themes Folder
+		├── exosphere.ini: Anti-ban (Blanks ProdInfo)
+		├── hbmenu.nro: HomeBrew Menu app
+		└── hekate_ctcaer_x.x.x.bin: Hekate Payload
 
-		/atmosphere : Atmosphere Custom Firmware Folder
-		/atmosphere/hosts/default.txt : Anti-ban (DNS MITM file for ATMOSPHERE emuMMC)
-
-		/bootloader : Hekate Folder
-		/bootloader/hekate_ipl.ini : .ini File for Hekate. Manage "Launch" button entries
-
-		/config : .ini files for Atmosphere Apps (or Tesla's Overlays)
-		/config/aio-switch-updater/preserve.txt : list of elements to preserve during an update.
-
-		/emuMMC : EmuNand Folder
-
-		/JKSV : JKSV Folder (SaveFiles Manager)
-
-		/switch : App Folder
-
-		/switchroot : Android: also Used by Hekate for android (Contains Android Payload and Joycons BT Dump)
-
-		/tegraexplorer : Tegra Explorer Folder (Contains Tegra Explorer Scripts)
-
-		/themes : Themes Folder
-
-		FILES ON ROOT
-		/exosphere.ini : Anti-ban (Blanks ProdInfo)
-		/hbmenu.nro : HomeBrew Menu app
-
-
-		DELETABLE
-		/hekate_ctcaer_x.x.x.bin : Hekate Payload
-		/LOST.DIR : Android generated folder
+		->ANDROID Auto-generated files
+		/(root)
+		├── Alarms
+		├── camera
+		├── DCIM
+		├── LOST.DIR
+		├── Movies
+		├── Music
+		├── Notification
+		├── Pictures: Screenshots folder
+		├── Podcasts
+		├── Ringtones
+		└── System Volume Information
 		-----------------------------------------
-		</pre>
-		
-		<pre>	CODES
-		#GAMES
-		0100152000022000 - Mario Kart 8 Deluxe
-		0100000000010000 - Super Mario Odyssey
-		010019401051C000 - Mario Strikers: Battle League Football
-		0100000011D90000 - Pokemon Brilliant Diamond
-		010042D00D900000 - Lego Star Wars: The Skywalker Saga
-		010036B0034E4000 - Super Mario Party
-		01007EF00011E000 - The Legend of Zelda: Breath of the Wild
-		01006a800016e000 - Super Smash Bros. Ultimate
-		01003D200BAA2000 - Pokemon Mystery Dungeon: Rescue Team DX
-		0100FF500E34A000 - Xenoblade Chronicles: Definitive Edition
-		0100EA80032EA000 - New Super Mario Bros. U Deluxe
-		0100DCA0064A6000 - Luigi's Mansion 3
-		0100bde00862a000 - Mario Tennis Aces
-		0100ABF008968000 - Pokemon Sword
-		01001F5010DFA000 - Pokemon Legends: Arceus
-
-		#SYSTEM
-		0100000000001007 : Psl.szs - "playerSelect" applet
-		0100000000001013 : MyPage.szs - "myPage" applet		#(shared with EDIZON - NXActivityLog)
-		0100000000001000 : common.szs - "qlaunch" applet	#(shared with NXThemesInstaller: THEMES FOLDER)
-		010000000000100D : "PhotoViewer" applet			#(shared with NXGallery exefs)
-		8000000000000050 - WIFI Bluetooth Date-Time Data
 		</pre>
 		
 		<!-- USEFUL GUIDE LINKS -->
@@ -1777,7 +1859,8 @@
 				</tr>
 			</table>
 		</div>
-		
+
+		<!-- FOOTER -->
 		<footer style="background-color:lavender">
 			<center>
 				<p>NXUpdateTracker - F-l-a</p>
@@ -1786,7 +1869,30 @@
 			</center>
 		</footer>
 		
+		
+		
 		<script>
+	/*MODULO MISC - inizio*/
+		/*VARIABILI GLOBALI - inizio*/
+			const APP_VERSION = "v2.0"		//versione dell'app. inserita nella pagina al caricamento
+			var isAuthenticated = false;	//usata per decidere se usare richieste api autenticate o non. inizializzata al caricamento della pagina facendo una richiesta con API_TOKEN
+			var isSwitchVersion = false;	//usata per decidere se caricare le credenziali dal file .ini. inizializzata al caricamento della pagina
+			var polipop	= null;				//pannello notifiche. inizializzato al caricamento della pagina
+			var JSONappVisibility = null;	//JSON contenente la configurazione della visibilità delle app. inizializzato al caricamento della pagina
+			var HASH = null;				//HASH dell'ultima commit su github. inizializzato al caricamento della pagina
+			var HASH_VISIBILITY = null;		//HASH dell'ultima commit su github. inizializzato al caricamento della pagina
+			var response = null;			//usata per le funzioni axios.get. inizializzato al caricamento della pagina
+			
+			//variabili per gestione visibilità tabelle main/payloads/homebrew/sysmodules+overlays
+			const NumeroAppMainTotali = document.getElementById("tabellaCheckboxMain").getElementsByClassName("checkBoxVisibilita").length;
+			const NumeroAppPayloadsTotali = document.getElementById("tabellaCheckboxPayloads").getElementsByClassName("checkBoxVisibilita").length;
+			const NumeroAppHomebrewTotali = document.getElementById("tabellaCheckboxHomebrew").getElementsByClassName("checkBoxVisibilita").length;
+			const NumeroAppSysmodulesOverlaysTotali = document.getElementById("tabellaCheckboxSysmodulesOverlays").getElementsByClassName("checkBoxVisibilita").length;
+			var NumeroAppMainNascoste = 0;
+			var NumeroAppPayloadsNascoste = 0;
+			var NumeroAppHomebrewNascoste = 0;
+			var NumeroAppSysmodulesOverlaysNascoste = 0;
+		/*VARIABILI GLOBALI - fine*/
 			/*-----*/
 			//Pulsanti del Menu - posso usare questo metodo se tolgo onclick() dalla immagine. necessario per chiamare funzioni async
 			const ElementoPulsanteMostraVersioni = document.getElementById("PulsanteMostraVersioni");				//prendo il pulsante per mostrare le versioni
@@ -1801,263 +1907,212 @@
 			ElementoPulsanteMostraCredenziali.addEventListener("click", async (event) => {await mostraCredenziali();});	//ci associo l'evento che chiama la funzione
 			ElementoPulsanteMostraCredenziali.addEventListener("keydown", async (event) => {if(event.key === "Enter"){await mostraCredenziali();}});	//ci associo l'evento che chiama la funzione
 			/*-----*/
-
-		/*SCRITTURA VERSIONE - inizio*/
-			document.getElementById("F-l-a/NXUpdateTracker_InstalledVersion").textContent = APP_VERSION;	//scrivo l'ultima versione nello span
-		/*SCRITTURA VERSIONE - fine*/
+			
+		/*GESTISCE L'APERTURA DELLE PAGINE DA IMMAGINE - inizio*/
+			function apriPagina(url, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					window.open(url);
+				}
+			}
+		/*GESTISCE L'APERTURA DELLE PAGINE DA IMMAGINE - fine*/
+	/*MODULO MISC - fine*/
+	
+	/*-----*/
+	
+	/*MODULO INIZIALIZZAZIONE - inizio*/
+		/*ENTRY POINT: INIZIALIZZAZIONE - inizio*/
+			document.addEventListener("DOMContentLoaded", async function(){		//quando la pagina ha finito di caricare
+				document.getElementById("F-l-a/NXUpdateTracker_InstalledVersion").textContent = APP_VERSION;	//scrivo la versione del file corrente nello span
+				await inizializzaPannelloNotifiche();	//crea pannello notifiche. devo aspettare che sia creato per aggiungerne
+				await checkSwitchVersion();				//controlla versione switch. devo aspettare perché carica le credenziali -> carica anche le credenziali
+				checkMobileVersion();					//controlla versione mobile
+				await controllaCredenziali();			//controlla le credenziali. devo aspettare per verificare che siano valide
+				await ottieniUltimoHash();				//carica l'ultimo hash. devo aspettare per salvare correttamente il valore prima di altre richieste
+				loadAppVisibility();					//inizializza la visibilità delle app
+				
+				$.blockUI.defaults = {message:null, overlayCSS:{backgroundColor:'#000', opacity:0.6}, baseZ: 1001, showOverlay: true};	//Configurazione script blocco pagina
+			});
+		/*ENTRY POINT: INIZIALIZZAZIONE - fine*/
 
 		/*CONTROLLO PIATTAFORMA - inizio*/
-			//GESTISCE NINTENDO SWITCH
-			var isSwitchVersion = false;			//inizia in modalità completa
-			try{
-				//controlla se è versione switch
-				if (navigator.userAgent.includes("Nintendo Switch")) {	//se sono su switch
-					isSwitchVersion = true;								//imposto modalità limitata
-					//loadCredentials();	//lascio che siano le funzioni a caricarsi le credenziali. meglio perché posso usare await
+			//GESTISCE NINTENDO SWITCH: carico credenziali
+			async function checkSwitchVersion(){
+				try{
+					//controlla se è versione switch
+					if (navigator.userAgent.includes("Nintendo Switch")){	//se sono su switch
+						isSwitchVersion = true;								//imposto modalità
+						await loadCredentials();							//carico le credenziali
+					}
+				}catch(error){
+					var testo = "Cannot determine platform. Some features may fail - " + error;
+					aggiungiNotifica(error, "WebApplet check error", testo);
 				}
-			}catch(error){
-				var testo = "Cannot determine platform. Some features may fail - " + error;
-				aggiungiNotifica(error, "WebApplet check", testo);
 			}
 			/*-----*/
-			//GESTISCE MOBILE BROWSERS
-			if(isMobileVersion()){
-				alert("Notice: Turn Desktop Mode on for a better experience!");
+			//GESTISCE MOBILE BROWSERS. NOTIFICA SE VERO
+			function checkMobileVersion(){
+				if(isMobileVersion()){
+					alert("Notice: Turn Desktop Mode on for a better experience!");
+				}
 			}
+			/*-----*/
+			//CONTROLLA MOBILE VERSION
 			function isMobileVersion(){
 				let check = false;
 				(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
 				return check;
 			}
 		/*CONTROLLO PIATTAFORMA - fine*/
-
-		/*GESTISCE CARICAMENTO DATI - inizio*/
-			//GESTISCE LA LOGICA PER MOSTRARE LE VERSIONI: (Caricando l'ultimo HASH) -> Carica il file VersioniInstallate -> Carica le Ultime Versioni e Colora (confronta)
-			async function mostraVersioni(){
-				if(isSwitchVersion){						//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				};
-				
+	/*MODULO INIZIALIZZAZIONE - fine*/
+	
+	/*-----*/
+	
+	/*MODULO NOTIFICHE - inizio*/	
+		/*GESTISCE LE NOTIFICHE - inizio*/
+			//GESTISCE CONFIGURAZIONE PANNELLO
+			async function inizializzaPannelloNotifiche(){
 				try{
-					//CARICO LE VERSIONI INSTALLATE
-					await ottieniUltimoHash();													//ottiene ultimo hash
-					await ottieniVersioniInstallate();											//prende file Installate, mostra le versioni e i pulsanti di aggiornamento
-				}catch(error){
-					aggiungiNotifica('error','GENERIC ERROR','Cannot load INSTALLED VERSIONS');	//notifica errore
-					console.log(error);
-				}finally{
-					try{
-						//CARICO LE ULTIME VERSIONI
-						await ottieniUltimoHash();												//ottiene ultimo hash
-						await ottieniUltimeVersioni();											//prende ultime versioni, le mostra e chiama i colori
-					}catch(error){
-						aggiungiNotifica('error','GENERIC ERROR','Cannot load LATEST VERSIONS');//notifica errore
-						console.log(error);
-					}finally{
-						document.getElementById("ContainerPulsanteToggleAppAggiornate").removeAttribute("hidden");	//mostro il pulsante per nascondere le app aggiornate
-						aggiungiNotifica('default','VERSIONS LOADER','DONE!');										//notifica terminazione
-					}
-				}
-			}
-			/*-----*/
-			//OTTENGO LE VERSIONI INSTALLATE
-			async function ottieniVersioniInstallate(){
-				if(isSwitchVersion){						//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				};
-				
-				try{
-					//CARICO FILE DA GITHUB E MOSTRO VERSIONI INSTALLATE
-					const response = await axios.get(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${HASH}/${FILE_PATH}`);	//prendo il file json delle versioni da Github
-					JSONversioniInstallate = response.data;																			//ottengo i dati del json da github
-					
-					JSONversioniInstallate.forEach(function(APPLICAZIONE) {		//per ogni APP mostro la versione in span con id: Autore/NomeApp_InstalledVersion
-						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).html(APPLICAZIONE.Versione);		//scrivo versione
-						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'black');				//imposto colore nero
-						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_PulsanteAggiornamento`).css('display', 'block');		//visualizza il pulsante aggiornamento
+					polipop = new Polipop('mypolipop', {
+						appendTo: 'body', 			//elemento a cui è ancorato
+						layout: 'panel',			//tipologia: panel/popups
+						theme: 'compact',			//tema: default/minimal/compact
+						position: 'bottom-right',	//posizione del pannello
+						icons: true,				//segna se vengono visualizzate le icone nelle notifiche
+						insert: 'after',			//dove vengono inserite le nuove notifiche: before/after
+						spacing: 10,				//spazio tra le notifiche
+						pool: 5,					//quante notifiche possono esserci visualizzate
+						sticky: true,				//se le notifiche non hanno il timer
+						progressbar: true,			//visualizza il timer
+						life: 3000,					//durata timer in ms
+						pauseOnHover: true,			//ferma il timer se passo col mouse
+						headerText: 'Notifications',	//nome pannello
+						closer: true,				//segna se il pulsante per chiudere viene mostrato
+						closeText: 'Close',		//testo pulsante per chiudere il pannello
+						loadMoreText:'Next page',//testo pulsante per scorrere la coda
+						hideEmpty: false,			//segna se nascondere il pannello se vuoto
+						interval: 250,				//tempo tra un polling e l'altro per nuove notifiche in ms
+						effect: 'fade',				//tipo di effetto: fade/slide
+						easing: 'ease-in',			//tipo di animazione 'linear''ease''ease-in''ease-out''ease-in-out''cubic-bezier' value
+						effectDuration: 250			//numero di ms durata animazione
 					});
+					polipop.enable();
 				}catch(error){
-					var text = "Cannot get INSTALLED VERSIONS - " + error.code + ": " + error.message;
-					aggiungiNotifica('warning','GENERIC ERROR',text);														//notifica errore
-					console.log(error);
-				}finally{
-					//aggiungiNotifica('default','Function ottieniVersioniInstallate','DONE!');
+					console.log(error);									//stampa errore
+					if(polipop === undefined){
+						alert("Unable to create the Notification Pane.\nPlease refresh the page and check your internet connection!");
+					}
 				}
 			}
 			/*-----*/
-			//OTTENGO LE ULTIME VERSIONI
-			async function ottieniUltimeVersioni(){
-				if(isSwitchVersion){						//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				};				
-				
-				try{
-					//CARICO ULTIME VERSIONI DA GITHUB E CHIAMO IL CONFRONTO
-					var Applicazioni = document.getElementsByClassName("RigaApp"); 	// Seleziona tutti gli elementi con la classe "RigaApp"
-					for(let i = 0; i < Applicazioni.length; i++){		//per ogni applicazione
-						var idAPP = Applicazioni[i].id;					//prendo l'ID dell'app
-						
-						if(idAPP !== "NintendoHOSVersion"){				//se non è NintendoHOSVersion, allora la versione è da prendere da github
-							try{
-								//PRENDE INFORMAZIONI SUL REPO CON CHIAMATA API A GITHUB
-								const response = await axios.get(`https://api.github.com/repos/${idAPP}/releases/latest`,
-								{
-									headers: {
-										'Authorization': `Bearer ${API_TOKEN}`
-									}
-								});
-								var ultimaVersione = response.data.tag_name;									//prendo l'ultima versione rilasciata
-								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersione);		//scrivo versione
-								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');		//imposto colore nero
-							}catch(error){
-								var text = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
-								aggiungiNotifica('warning',idAPP,text);											//notifica errore
-								console.log(error);
-							}
-						}else{											//se è NintendoHOSVersion, allora la versione è da prendere da un sito diverso
-							/*	https://api.allorigins.win/raw?url=				ok ma html
-							https://api.codetabs.com/v1/proxy?quest=   			ok ma html
-							https://cors-get-proxy.sirjosh.workers.dev/?url=	ok ma html
-							https://secret-ocean-49799.herokuapp.com/			no
-							https://cors.eu.org/								si	-flag Non sicuro
-							https://cors-proxy.tk/?url=							no
-							https://jsonp.afeld.me/								no
-							https://corsanywhere.herokuapp.com/					no
-							https://fast-dawn-89938.herokuapp.com/				no
-							https://cors-proxy.fringe.zone/						si
-							*/
-							try{
-								//PRENDE INFORMAZIONI DA https://yls8.mtheall.com/ninupdates
-								const response = await axios.get(`https://cors.eu.org/https://yls8.mtheall.com/ninupdates/titlelist.php?sys=hac&csv=1&reg=G&tid=0100000000000816`);
-								var ultimaVersioneFirmware = response.data.split(" ").pop().trim();	//ottengo l'ultima versione prendendola dall'ultimo elemento del file, a cui tolgo eventuali spazi alla fine/inizio
-								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersioneFirmware);	//scrivo versione
-								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');			//imposto colore nero
-							}catch(error){
-								var text = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
-								aggiungiNotifica('warning',idAPP,text);												//notifica errore
-								console.log(error);
-							}
-						}
-						//CHIAMO CONFRONTO TRA VERSIONI
-						confrontaVersioni(idAPP);
-					}
-				}catch(error){
-					var text = "Cannot get LATEST VERSIONS - " + error.code + ": " + error.message;
-					aggiungiNotifica('error','GENERIC ERROR',text);													//notifica errore
-					console.log(error);
-				}finally{
-					//aggiungiNotifica('default','Function ottieniUltimeVersioni','DONE!');
-				}
-			}
-			/*-----*/
-			//CONFRONTO LE VERSIONI
-			async function confrontaVersioni(APPLICAZIONE){
-				const vettoreCasiParticolari= ['J-D-K/JKSV', 'F-l-a/NXUpdateTracker'];		//contiene applicazioni che non sono direttamente confrontabili
-				
-				try{
-					//LEGGE VERSIONI E CONFRONTA
-					var ultimaVersione = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).text();			//prendo ultima versione dal campo
-					var versioneInstallata = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).text();	//prendo versione installata dal campo
-				
-					//effettuo operazioni preliminari nel caso di casi particolari
-					if (vettoreCasiParticolari.includes(APPLICAZIONE) === true) {
-						if (APPLICAZIONE === 'J-D-K/JKSV') {		//data in formato gg/mm/aaaa
-							
-							//converto la data nel numero di giorni. prima per l'ultima versione, poi per quella installata
-							ultimaVersione = ultimaVersione.replaceAll('.', '/').split('/');	//trasformo i punti in barre per uniformare le date - versioni, poi splitto sulla barra
-							ultimaVersione = parseInt(ultimaVersione[0]) + parseInt(ultimaVersione[1])*30 + parseInt(ultimaVersione[2])*365;	//calcolo il numero di giorni complessivo
-
-							versioneInstallata = versioneInstallata.replaceAll('.', '/').split('/');
-							versioneInstallata = parseInt(versioneInstallata[0]) + parseInt(versioneInstallata[1])*30 + parseInt(versioneInstallata[2])*365;
-						}else if(APPLICAZIONE === 'F-l-a/NXUpdateTracker'){	//devo mostrare messaggio
-							if(APP_VERSION < ultimaVersione){				//se c'è una nuova versione
-								document.getElementById('F-l-a/NXUpdateTracker_InstalledVersion').style.display = "none";
-								document.getElementById('MessaggioAutore').style.display = "none";
-								document.getElementById('messaggioNuovaVersione').style.display = "block";
-							}
-						}
-					}
-					//confronto e coloro
-					if (versioneInstallata < ultimaVersione) {													//se la versione installata è vecchia
-						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'red');		//allora testo installata di colore rosso
-						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).removeClass("AppAggiornata");
-					} else if (versioneInstallata > ultimaVersione) {											//se la versione installata è nuova
-						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'red');			//allora testo ultima di colore rosso
-						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).removeClass("AppAggiornata");
-					}else{																						//se la versione è la stessa
-						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).addClass("AppAggiornata");					//aggiungo la classe aggiornata alla riga app					}
-					}
-				}catch(error){
-					var text = "Cannot COMPARE VERSIONS - " + error.code + ": " + error.message;
-					aggiungiNotifica('error',APPLICAZIONE,text);											//notifica errore
-					console.log(error);
+			//AGGIUNGE UNA NOTIFICA AL PANNELLO DELLE NOTIFICHE
+			function aggiungiNotifica(tipoNotifica, titoloNotifica, contenutoNotifica, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					polipop.add({
+						content: contenutoNotifica,
+						title: titoloNotifica,
+						type: tipoNotifica			//default, info, success, warning, error
+					});
 					
-					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'green');		//coloro di verde se errore
-					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'green');
-				}finally{
-					//aggiungiNotifica('default','Function confrontaVersioni','DONE!');			//commentato perché spamma troppo
+					/*example:
+					polipop.add({
+						type: 'success',
+						title: 'Message',
+						content: 'This is the message content.'
+					});
+					*/
 				}
 			}
-		/*GESTISCE CARICAMENTO DATI - fine*/
-		
-		/*GESTISCE AUTENTICAZIONE - inizio*/
-			//MOSTRA LA QTA RIMANANTE DI RICHIESTE API
-			async function ottieniLimiteRichiesteAPI(){
-				if(isSwitchVersion){							//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				};
-				
-				try{
-					//EFFETTUA LA RICHIESTA API DEI LIMITI
-					const response = await axios.get('https://api.github.com/rate_limit', {
-						headers: {
+		/*GESTISCE LE NOTIFICHE - fine*/
+	/*MODULO NOTIFICHE - fine*/
+	
+	/*-----*/
+	
+	/*MODULO AUTENTICAZIONE - inizio*/
+		/*INIZIALIZZAZIONE MODALITÀ OPERATIVA - inizio*/
+			//CONTROLLA CHE LE CREDENZIALI SIANO VALIDE
+			async function controllaCredenziali(){
+				try{						//Prova a fare una richiesta API con il token (di fatto è simile alla funzione per ottenere il numero di richieste rimanenti)
+					response = await axios.get('https://api.github.com/rate_limit', 
+					{
+						headers:{
 							'Authorization': `Bearer ${API_TOKEN}`
 						}
 					});
-					RICHIESTE_API_RIMANENTI = response.data.resources.core.remaining;	//Memorizzo il numero di richieste disponibili
-					var testo = "remaining API requests: " + RICHIESTE_API_RIMANENTI + ", Reset: " + new Date(response.data.resources.core.reset*1000).toLocaleString();
-					aggiungiNotifica('info','API REQUESTS',testo);						//notifica sulle richieste disponibili e tempo reset
-				}catch(error){
+					//se arrivo qui e non entro nel catch, allora la richiesta è stata effettuata correttamente senza errori
+					aggiungiNotifica('success','VALID TOKEN','Your token configuration seems to work as expected');
+					isAuthenticated = true;
+				}catch(error){	//entro nel catch qualsiasi sia l'errore
 					console.log(error);														//notifica errore
-					if (error.response !== undefined && error.response.status === 401) {
-						var text = "401: Invalid TOKEN - " + error.message;
-						aggiungiNotifica('error','GITHUB ERROR',text);
+					if(error.response !== undefined && error.response.status === 401){
+						var testo = "Invalid TOKEN. Check token configuration - " + error.message;
+						aggiungiNotifica('error','GITHUB ERROR',testo);
 					}else{
-						var text = "Cannot get REMAINING API REQUESTS - " + error.code + ": " + error.message;
-						aggiungiNotifica('error','GENERIC ERROR',text);
+						var testo = "Cannot verify your token configuration - " + error.code + ": " + error.message;
+						aggiungiNotifica('error','GENERIC ERROR',testo);
 					}
-				}finally{
-					//aggiungiNotifica('default','Function ottieniLimiteRichiesteAPI','DONE!');
+					aggiungiNotifica('warning','Operating Mode','Unauthenticated mode: You may get API requests - related errors');
+					isAuthenticated = false;
 				}
 			}
 			/*-----*/			
 			//OTTIENE E SALVA L'HASH DELL'ULTIMA COMMIT
 			async function ottieniUltimoHash(){
-				if(isSwitchVersion){				//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				};
 				
-				if(HASH === undefined){	//se non ho un hash già salvato. può generare incongruenze se per qualche motivo si effettuano operazioni di aggiornamento da altre schede (che modificano l'hash). in quel caso bisogna ricaricare la pagina
-					try{
-						//ottiene informazioni sui commit
-						const response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/commits`);
-						HASH = response.data[0].sha;											//salvo hash
-					}catch(error){
-						var text = "Cannot get LATEST COMMIT HASH: 'Main' used - " + error.code + ": " + error.message;
-						aggiungiNotifica('error','GENERIC ERROR',text);
-						console.log(error);
-						HASH = "main";			//in caso di errore nell'ottenimento dell'hash, uso la parola chiave main (utilizzo i valori del commit presente in cache: circa 5min in ritardo)
-					}finally{
-						//aggiungiNotifica('default','Function ottieniUltimoHash','DONE!');
+				try{
+					//ottiene informazioni sui commit
+					if(isAuthenticated){
+						response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/commits`, 
+							{
+							headers:{
+								'Authorization': `Bearer ${API_TOKEN}`
+							}
+						});
+					}else{		//not authenticated -> no TOKEN
+						response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/commits`);
+					}
+					HASH = response.data[0].sha;											//salvo hash
+				}catch(error){
+					var testo = "Cannot get LATEST COMMIT HASH: 'Main' used - " + error.code + ": " + error.message;
+					aggiungiNotifica('error','GENERIC ERROR',testo);
+					console.log(error);
+					HASH = "main";			//in caso di errore nell'ottenimento dell'hash, uso la parola chiave main (utilizzo i valori del commit presente in cache: circa 5min in ritardo)
+				}
+			}
+		/*INIZIALIZZAZIONE MODALITÀ OPERATIVA - fine*/
+		
+		/*GESTISCE AUTENTICAZIONE - inizio*/
+			//MOSTRA LA QTA RIMANANTE DI RICHIESTE API
+			async function ottieniLimiteRichiesteAPI(){
+			
+				try{
+					//EFFETTUA LA RICHIESTA API DEI LIMITI
+					if(isAuthenticated){
+						response = await axios.get('https://api.github.com/rate_limit', 
+							{
+							headers:{
+								'Authorization': `Bearer ${API_TOKEN}`
+							}
+						});
+					}else{		//not authenticated -> no TOKEN
+						response = await axios.get('https://api.github.com/rate_limit');
+					}
+					var richiesteApiRimanenti = response.data.resources.core.remaining;	//Memorizzo il numero di richieste disponibili
+					var testo = "remaining API requests: " + richiesteApiRimanenti + ", Reset: " + new Date(response.data.resources.core.reset*1000).toLocaleString();
+					aggiungiNotifica('info','API REQUESTS',testo);						//notifica sulle richieste disponibili e tempo reset
+				}catch(error){
+					console.log(error);														//notifica errore
+					if(error.response !== undefined && error.response.status === 401){
+						var testo = "401: Invalid TOKEN - " + error.message;
+						aggiungiNotifica('error','GITHUB ERROR',testo);
+					}else{
+						var testo = "Cannot get REMAINING API REQUESTS - " + error.code + ": " + error.message;
+						aggiungiNotifica('error','GENERIC ERROR',testo);
 					}
 				}
 			}
 			/*-----*/
 			//MOSTRA LE CREDENZIALI
 			async function mostraCredenziali(){
-				if(isSwitchVersion){					//se è la versione switch, carica le credenziali
-					await loadCredentials();
-				}
 
 				if(API_TOKEN === 'INSERT_API_TOKEN_HERE'){	//se non sono valide, notifica importante con alert
 					if(isSwitchVersion){
@@ -2074,12 +2129,563 @@
 				}
 			}
 		/*GESTISCE AUTENTICAZIONE - fine*/
+	/*MODULO AUTENTICAZIONE - fine*/
+	
+	/*-----*/
+	
+	/*MODULO VISIBILITÀ	(RigheApp) - inizio*/
+		/*GESTISCE FILE VISIBILITÀ - inizio*/
+			//NASCONDE LE APP SECONDO I VALORI DEL FILE FILE_VISIBILITY (SCARICA FILE JSON DI CONFIGURAZIONE DA GITHUB)
+			async function loadAppVisibility(){
+			
+				try{				//OTTIENE IL FILE DELLE VISIBILITÀ
+					if(isAuthenticated){
+						response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_VISIBILITY}`,
+							{
+							headers:{
+								'Authorization': `Bearer ${API_TOKEN}`
+							}
+						});
+					}else{		//not authenticated -> no TOKEN
+						response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_VISIBILITY}`);
+					}
+					//se non trova il file -> errore
+					if(response.status !== 200){						
+						var testo = "Cannot read app visibility configuration. All apps shown by default - " + response;
+						aggiungiNotifica("warning", "appVisibilityConfig.json error", testo);
+						console.log(response);
+					}else{
+						HASH_VISIBILITY = response.data.sha;	//è necessario? tanto viene rigenerato (riscaricato) nel momento che devo caricare
+						const content = response.data.content;
+						const decodedContent = window.atob(content);
+						JSONappVisibility = JSON.parse(decodedContent);	//converto la stringa JSON in un vettore di oggetti JavaScript
+						
+						for(var App in JSONappVisibility){									//per ogni app nel vettore
+							if(JSONappVisibility[App] === false){							//se il valore associato è falso
+								document.getElementById(App+"_checkbox").checked = false;	//deseleziono la checkbox
+							}
+						}
+						gestisciVisibilita();												//gestisco la visibilità
+					}
+				}catch(error){
+					var testo = "Cannot load app visibility configuration. All apps are shown by default (Changes won't be saved) - " + error;
+					aggiungiNotifica("warning", "appVisibilityConfig.json error", testo);
+					console.log(error);
+				}
+			}
+			/*-----*/
+			//MODIFICA IL JSON DI CONFIGURAZIONE LOCALMENTE
+			async function modifyAppConfig(App, valore){
+				if(JSONappVisibility !== null){				//se ero riuscito ad aprire il file
+					JSONappVisibility[App] = valore;		//associo il nuovo valore all'app
+				}
+			}
+			/*-----*/
+			//CARICA IL FILE JSON DI CONFIGURAZIONE (SALVATAGGIO SU GITHUB)
+			async function uploadAppConfig(){
+				if(JSONappVisibility !== null){		//se ero riuscito ad aprire il file
+					try{
+						if(isAuthenticated){		//riscarico il file delle visibilità. salvo l'HASH_VISIBILITY da usare per il caricamento
+							response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_VISIBILITY}`, 
+								{
+								headers:{
+									'Authorization': `Bearer ${API_TOKEN}`
+								}
+							});
+						}else{		//not authenticated -> no TOKEN
+							response = await axios.get(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_VISIBILITY}`);
+						}
+						HASH_VISIBILITY = response.data.sha;
+						const updatedContent = JSON.stringify(JSONappVisibility, null, 2);	// converto l'oggetto in una nuova stringa JSON
+						const encodedContent = window.btoa(updatedContent);		//riconverto la stringa in base64					
+						
+						axios.put(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_VISIBILITY}`,		//carico usando l'HASH_VISIBILITY
+						{
+							"message": 'Update Visibility Config',
+							"content": encodedContent,
+							"sha": HASH_VISIBILITY
+						},
+						{
+							headers:{
+								'Authorization': `Bearer ${API_TOKEN}`
+							}
+						})
+						.then(function(response){
+							HASH_VISIBILITY = response.data.commit.sha;			//salvo nuovo hash
+							
+							aggiungiNotifica('success','Visibility.json Successfully Uploaded','Visibility Configuration Saved');			//notifica errore
+						})
+						.catch(function(error){
+							var testo = "Cannot save app visibility configuration - " + error;
+							aggiungiNotifica("error", "Visibility.json error", testo);
+							console.log(error);
+						});
+					}catch(error){
+						var testo = "Cannot upload app visibility configuration - " + error;
+						aggiungiNotifica("error", "appVisibilityConfig.json error", testo);
+						console.log(error);
+					}
+				}else{
+					aggiungiNotifica("error", "appVisibilityConfig.json error", "Cannot upload app visibility configuration, it wasn't downloaded at page startup");
+				}
+			}
+		/*GESTISCE FILE VISIBILITÀ - fine*/
+
+		/*GESTISCE PANNELLO VISIBILITÀ APP - inizio*/
+			//GESTISCE LOGICA MOSTRA(BLOCCO)/NASCONDI(SBLOCCO)
+			function toggleMenuVisibilita(evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					if(document.getElementById("PannelloVisibilita").hasAttribute("hidden")){		//se il pannello è invisibile
+						document.body.style.overflow = 'hidden';									//evita lo scroll
+						document.body.style.position = 'fixed';										//blocca posizione pagina (bug: porta la pagina tutto in alto, ma necessario per evitare scrolling)
+						$.blockUI();																//blocca la pagina
+						document.getElementById("PannelloVisibilita").removeAttribute("hidden");	//mostra il pannello
+						$('#PannelloVisibilita').unblock();											//sblocca il pannello
+						document.getElementById("NintendoHOSVersion_checkbox").focus();				//porta il focus sul contenuto
+					}else{																				//altrimenti è visibile
+						document.getElementById("PannelloVisibilita").setAttribute("hidden", "true");	//nasconde il pannello
+						document.body.style.overflow = 'visible';										//permette scroll
+						document.body.style.position = 'static';										//sblocca posizione pagina
+						$.unblockUI();																	//sblocca la pagina
+					}
+				}
+			}
+			/*-----*/
+			//GESTISCE CAMBIAMENTI DA MENU VISIBILITÀ (CHECKBOX). Nasconde il menu, gestisce la visibilità delle app e carica la configurazione su github
+			async function gestisciModificheMenuVisibilita(daAggiornare){
+				toggleMenuVisibilita();			//renderizza i cambiamenti (tolgo la gestione della viiìsibi)
+				await gestisciVisibilita();		//modifica il json, mostra/nasconde
+				if(daAggiornare && JSONappVisibility !== null){			//se devo anche aggiornare il file su github ed ero riuscito ad aprirlo
+					uploadAppConfig();			//carico su github
+				}
+			}
+			/*-----*/
+			//MODIFICA IL JSON, MOSTRA/NASCONDE E AGGIORNA I CONTATORI
+			async function gestisciVisibilita(){
+				const elencoCheckboxApp = document.getElementsByClassName("checkBoxVisibilita");	//prendo tutte le checkbox
+				for(let i = 0; i < elencoCheckboxApp.length; i++){									//per ogni applicazione (checkbox)
+					
+					var idCheckbox = elencoCheckboxApp[i].id;
+					var daMostrare = elencoCheckboxApp[i].checked;
+					
+					var numeroOperazione = 0;							//inizialmente l'app non so se verrà nascosta o mostrata o era già nello stato desiderato
+					var idAPP = idCheckbox.replace("_checkbox", "");	//prendo l'ID dell'app, togliendo _checkbox
+					const App = document.getElementById(idAPP);			//prendo la riga app
+					if(daMostrare){									//se l'app è da mostrare(checkbox selezionata)
+						if(App.hasAttribute("hidden")){				//solo se era nascosta (se era già mostrata, non fa nulla)
+							await modifyAppConfig(idAPP, true);			//aggiorna il json
+							App.removeAttribute("hidden");				// visualizza la app
+							var numeroOperazione = -1;					//una app nascosta in meno
+						}
+					}else{											//se l'app è da nascondere(checkbox deselezionata)
+						if(!App.hasAttribute("hidden")){			//solo se era mostrata (se era già nascosta, non fa nulla)
+							await modifyAppConfig(idAPP, false);		//aggiorna il json
+							App.setAttribute("hidden", "true");			//nasconde la app
+							var numeroOperazione = 1;					//una app nascosta in più
+						}
+					}
+					
+					//aggiorna i contatori delle app nascoste
+					idTabella = document.getElementById(idCheckbox).closest('table').id;
+					switch(idTabella){
+						case "tabellaCheckboxMain":
+							NumeroAppMainNascoste += numeroOperazione;
+							break;
+						case "tabellaCheckboxPayloads":
+							NumeroAppPayloadsNascoste += numeroOperazione;
+							break;
+						case "tabellaCheckboxHomebrew":
+							NumeroAppHomebrewNascoste += numeroOperazione;
+							break;
+						case "tabellaCheckboxSysmodulesOverlays":
+							NumeroAppSysmodulesOverlaysNascoste += numeroOperazione;
+							break;
+						default:
+							aggiungiNotifica('warning',idAPP,'Error counting how many apps are hidden');	//notifica errore
+					}
+				}
+				controllaSezioni();				//infine controllo se devo modificare le sezioni
+			}
+		/*GESTISCE PANNELLO VISIBILITÀ APP - fine*/
 		
+		/*GESTISCE LA VISIBILITÀ DELLE APP AGGIORNATE - inizio*/
+			//MOSTRA/NASCONDE LE APP AGGIORNATE
+			function toggleAppAggiornate(iconaPremuta, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					var numeroOperazione = 0;							//inizialmente l'app non so se verrà nascosta o mostrata o era già nello stato desiderato
+					const vettoreAppParticolari = {"exelix11/SysDVR": ["Hartie95/sysdvr-overlay"],"masagrator/ReverseNX-RT": ["masagrator/ReverseNX-Tool"],"masagrator/Status-Monitor-Overlay": ["masagrator/NX-FPS"],"masagrator/SaltyNX": ["masagrator/SaltyNX-Tool"]};	//vettore delle righe che contengono altre app
+					//GESTISCO LE APP AGGIORNATE
+					var vettoreAppAggiornate = document.getElementsByClassName("AppAggiornata");			//ottengo vettore delle app aggiornate
+					for(var i = 0; i < vettoreAppAggiornate.length; i++){									//per ogni app aggiornata
+						if(document.getElementById(vettoreAppAggiornate[i].id+"_checkbox") === null || (document.getElementById(vettoreAppAggiornate[i].id+"_checkbox")).checked){		//se è impostata come visibile globalmente o se la checkbox che flagga la visibilità non esiste (prima controllo esistenza, poi lo stato. altrimenti ho errore)
+							if(vettoreAppAggiornate[i].id !== 'F-l-a/NXUpdateTracker' && (Object.keys(vettoreAppParticolari).includes(vettoreAppAggiornate[i].id)===false || appContenuteAggiornate(vettoreAppParticolari[vettoreAppAggiornate[i].id]))){	//non faccio nulla se è 'F-l-a/NXUpdateTracker'
+								if(iconaPremuta === "ShowSameVersionButton"){							//controlla quale azione eseguire. se deve mostrare
+									if(vettoreAppAggiornate[i].hasAttribute("hidden")){					//solo se era nascosta (se era già mostrata, non fa nulla)
+										vettoreAppAggiornate[i].removeAttribute("hidden");					// visualizza la app
+										var numeroOperazione = -1;											//una app nascosta in meno
+									}
+								}else{
+									if(!vettoreAppAggiornate[i].hasAttribute("hidden")){				//solo se era mostrata (se era già nascosta, non fa nulla)
+										vettoreAppAggiornate[i].setAttribute("hidden", "true");				//nasconde la app
+										var numeroOperazione = 1;											//una app nascosta in più
+									}
+								}
+
+								//aggiorna i contatori delle app nascoste
+								if(document.getElementById(vettoreAppAggiornate[i].id+"_checkbox") !== null){		//solo se esiste la checkbox corrispondente (le app contenute non hanno checkbox)
+									idTabella = (document.getElementById(vettoreAppAggiornate[i].id+"_checkbox")).closest('table').id;
+									switch(idTabella){
+										case "tabellaCheckboxMain":
+											NumeroAppMainNascoste += numeroOperazione;
+											break;
+										case "tabellaCheckboxPayloads":
+											NumeroAppPayloadsNascoste += numeroOperazione;
+											break;
+										case "tabellaCheckboxHomebrew":
+											NumeroAppHomebrewNascoste += numeroOperazione;
+											break;
+										case "tabellaCheckboxSysmodulesOverlays":
+											NumeroAppSysmodulesOverlaysNascoste += numeroOperazione;
+											break;
+										default:
+											aggiungiNotifica('warning',idAPP,'Error counting how many apps are hidden');	//notifica errore
+									}
+								}
+							}
+						}
+					}
+					//GESTISCO LE APP SENZA VERSIONE
+					const vettoreAppSenzaVersione= ['Atmosphere/Fusee', 'Atmosphere/Haze', 'Atmosphere/Daybreak', 'Atmosphere/Reboot2Payload', 'blawar/tinfoil'];		//contiene applicazioni che non hanno una versione propria
+					for(var i=0; i<vettoreAppSenzaVersione.length; i++){							//per ogni app senza versione
+						if (iconaPremuta === "ShowSameVersionButton") {								//controlla quale azione eseguire. se deve mostrare
+							document.getElementById(vettoreAppSenzaVersione[i]).removeAttribute("hidden");	// visualizza la app
+							var numeroOperazione = -1;														//una app nascosta in meno
+						} else {
+							document.getElementById(vettoreAppSenzaVersione[i]).setAttribute("hidden", "true");	//altrimenti la nasconde
+							var numeroOperazione = 1;															//una app nascosta in più
+						}
+					
+						//aggiorna i contatori delle app nascoste
+						if(document.getElementById(vettoreAppSenzaVersione[i].id+"_checkbox") !== null){		//solo se esiste la checkbox corrispondente (le app contenute non hanno checkbox)
+							idTabella = (document.getElementById(vettoreAppSenzaVersione[i].id+"_checkbox")).closest('table').id;
+							switch(idTabella){
+								case "tabellaCheckboxMain":
+									NumeroAppMainNascoste += numeroOperazione;
+									break;
+								case "tabellaCheckboxPayloads":
+									NumeroAppPayloadsNascoste += numeroOperazione;
+									break;
+								case "tabellaCheckboxHomebrew":
+									NumeroAppHomebrewNascoste += numeroOperazione;
+									break;
+								case "tabellaCheckboxSysmodulesOverlays":
+									NumeroAppSysmodulesOverlaysNascoste += numeroOperazione;
+									break;
+								default:
+									aggiungiNotifica('warning',idAPP,'Error counting how many apps are hidden');	//notifica errore
+							}
+						}
+					}
+					//CAMBIO IL PULSANTE
+					if (iconaPremuta === "ShowSameVersionButton") {					//infine cambia lo stato del pulsante cambiando l'id e l'alt
+						document.getElementById("ShowSameVersionButtonImage").alt = "Hide Updated Apps";			//cambio l'alt dell'icona
+						document.getElementById("ShowSameVersionButtonImage").id = 'HideSameVersionButtonImage';	//cambio l'icona
+						document.getElementById(iconaPremuta).id = 'HideSameVersionButton';							//cambio l'id del pulsante
+					} else {
+						document.getElementById("HideSameVersionButtonImage").alt = "Show Updated Apps";			//cambio l'alt dell'icona
+						document.getElementById("HideSameVersionButtonImage").id = 'ShowSameVersionButtonImage';	//cambio l'icona
+						document.getElementById(iconaPremuta).id = 'ShowSameVersionButton';							//cambio l'id del pulsante
+					}
+					//CONTROLLO SEZIONI
+					controllaSezioni();		//infine controllo se devo modificare le sezioni
+				}
+			}
+			/*-----*/
+			//CONTROLLA SE LE APP CONTENUTE SONO AGGIORNATE
+			function appContenuteAggiornate(vettoreAppContenute){							//prendo le app contenute
+				for(var i=0; i<vettoreAppContenute.length; i++){							//per ogni app
+					const elemento = document.getElementById(vettoreAppContenute[i]);		//prende l'elemento html (la riga)
+					if (!elemento.classList.contains("AppAggiornata")){						//se non è aggiornata
+						return false;														//non nascondo la app contenente. ritorno falso
+					}
+				}
+				return true;																//altrimenti alla fine ritorno vero
+			}
+		/*GESTISCE LA VISIBILITÀ DELLE APP AGGIORNATE - fine*/
+		
+		/*CONTROLLA VISUALIZZAZIONE SEZIONI - inizio*/
+			//CONTROLLO SE DEVO MOSTRARE/NASCONDERE LE SEZIONI
+			function controllaSezioni(){
+				if(NumeroAppMainTotali - NumeroAppMainNascoste === 0){								//se app main non mostrate
+					document.getElementById("rigaIntestazioneMain").setAttribute("hidden", "true");	//nasconde intestazione main
+				}else{																				//altrimenti
+					document.getElementById("rigaIntestazioneMain").removeAttribute("hidden");		//mostra intestazione main
+				}
+				
+				if(NumeroAppPayloadsTotali - NumeroAppPayloadsNascoste === 0){						//se tabella payloads vuota
+					document.getElementById("rigaPulsantePayloads").setAttribute("hidden", "true");	//nasconde pulsante payloads
+					document.getElementById("rigaPayloads").setAttribute("hidden", "true");			//nasconde riga payloads
+				}else{																				//altrimenti
+					document.getElementById("rigaPulsantePayloads").removeAttribute("hidden");		//mostra pulsante payloads
+					document.getElementById("rigaPayloads").removeAttribute("hidden");				//mostra riga payloads
+				}
+				
+				if(NumeroAppMainTotali - NumeroAppMainNascoste === 0 && NumeroAppPayloadsTotali - NumeroAppPayloadsNascoste === 0){		//se tabella main vuota
+					document.getElementById("tabellaMain").setAttribute("hidden", "true");			//nasconde main
+				}else{																				//altrimenti
+					document.getElementById("tabellaMain").removeAttribute("hidden");				//mostra main
+				}
+				
+				if(NumeroAppHomebrewTotali - NumeroAppHomebrewNascoste === 0){						//se tabella homebrew vuota
+					document.getElementById("tabellaHomebrew").setAttribute("hidden", "true");		//nasconde Homebrew
+				}else{																				//altrimenti
+					document.getElementById("tabellaHomebrew").removeAttribute("hidden");			//mostra Homebrew
+				}
+				
+				if(NumeroAppSysmodulesOverlaysTotali - NumeroAppSysmodulesOverlaysNascoste === 0){			//se tabella sysmodules+overlays vuota
+					document.getElementById("tabellaSysmodulesOverlays").setAttribute("hidden", "true");	//nasconde Sysmodules+Overlays
+				}else{																						//altrimenti
+					document.getElementById("tabellaSysmodulesOverlays").removeAttribute("hidden");			//mostra Sysmodules+Overlays
+				}
+			}
+		/*CONTROLLA VISUALIZZAZIONE SEZIONI - fine*/
+	/*MODULO VISIBILITÀ	(RigheApp) - fine*/
+		
+	/*MODULO VISIBILITÀ	(TabelleDettagli) - inizio*/	
+		/*GESTISCE LE TABELLE DETTAGLI - inizio*/
+			//MOSTRA-NASCONDE I DETTAGLI DELL'APPLICAZIONE RICEVUTA TRA I PARAMETRI
+			function mostraDettagli(applicazione, evento) {
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					var nomeElemento = applicazione + '_TabellaDettagli';
+					elemento = document.getElementById(nomeElemento);
+					if (elemento.style.display === "block") {		//se erano visibili
+						elemento.style.display = "none";			//allora li nasconde
+					} else {
+						elemento.style.display = "block";			//altrimenti li visualizza
+					}
+				}
+			}
+			/*-----*/
+			//MOSTRA-NASCONDE I DETTAGLI PER LA CONFIGURAZIONE CUSTOM DI TUTTI GLI ELEMENTI, A SECONDA DELL'ICONA PREMUTA (+ o -)
+			function mostraTutti(iconaPremuta, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					var vettoreTabelleDettagli = document.getElementsByClassName("tabellaDettagli");	//ottengo vettore degli elementi che contengono i dettagli
+					for (var i = 0; i < vettoreTabelleDettagli.length; i++) {							//per ogni tabella dei dettagli
+						if (iconaPremuta === "ExpandIconButton") {										//controlla quale azione eseguire. se deve espandere
+							vettoreTabelleDettagli[i].style.display = "block";							// visualizza la tabella
+						} else {
+							vettoreTabelleDettagli[i].style.display = "none";							//altrimenti la nasconde
+						}
+					}
+					if (iconaPremuta === "ExpandIconButton") {											//infine cambia lo stato del pulsante cambiando l'id e l'alt
+						document.getElementById(iconaPremuta).id = 'CollapseIconButton';
+						document.getElementById("ExpandIconButtonImage").id = 'CollapseIconButtonImage';
+						document.getElementById("CollapseIconButtonImage").alt = "Collapse All";
+					} else {
+						document.getElementById(iconaPremuta).id = 'ExpandIconButton';
+						document.getElementById("CollapseIconButtonImage").id = 'ExpandIconButtonImage';
+						document.getElementById("ExpandIconButtonImage").alt = "Expand All";
+					}
+				}
+			}
+			/*-----*/
+			//MOSTRA-NASCONDE LA TABELLA DEI PAYLOADS
+			function mostraPayloads(pulsantePremuto, evento){
+				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
+					mostraDettagli('dettagliPayloads');						//cambia lo stato della tabella
+					if (pulsantePremuto === "MostraDettagliPayloads") {		//controlla quale azione è stata eseguita. aggiorna la scritta cambiando l'id
+						document.getElementById(pulsantePremuto).innerHTML = "&and; HIDE PAYLOADS &and;";
+						document.getElementById(pulsantePremuto).id = 'NascondiDettagliPayloads';
+					} else {
+						document.getElementById(pulsantePremuto).innerHTML = "&or; SHOW PAYLOADS &or;";
+						document.getElementById(pulsantePremuto).id = 'MostraDettagliPayloads';
+					}
+				}
+			}
+		/*GESTISCE LE TABELLE DETTAGLI - fine*/
+	/*MODULO VISIBILITÀ	(TabelleDettagli) - fine*/
+	
+	/*-----*/
+	
+	/*MODULO DOWNLOAD VERSIONI - inizio*/
+		/*GESTISCE CARICAMENTO DATI - inizio*/
+			//GESTISCE LA LOGICA PER MOSTRARE LE VERSIONI: Carica il file VersioniInstallate -> Carica le Ultime Versioni e Colora (confronta)
+			async function mostraVersioni(){
+
+				try{
+					//CARICO LE VERSIONI INSTALLATE
+					await ottieniVersioniInstallate();											//prende file Installate, mostra le versioni e i pulsanti di aggiornamento
+				}catch(error){
+					var testo = "Cannot load INSTALLED VERSIONS - " + error.code + ": " + error.message;
+					aggiungiNotifica('error','GENERIC ERROR',testo);	//notifica errore
+					console.log(error);
+				}finally{
+					try{
+						//CARICO LE ULTIME VERSIONI
+						await ottieniUltimeVersioni();											//prende ultime versioni, le mostra e chiama i colori
+					}catch(error){
+						var testo = "Cannot load LATEST VERSIONS - " + error.code + ": " + error.message;
+						aggiungiNotifica('error','GENERIC ERROR',testo);//notifica errore
+						console.log(error);
+					}finally{
+						if(isAuthenticated){			//se è autenticato allora ho caricato le versioni aggiornate, quindi ha senso mostrare il pulsante
+							document.getElementById("ContainerPulsanteToggleAppAggiornate").removeAttribute("hidden");	//mostro il pulsante per nascondere le app aggiornate
+						}
+						aggiungiNotifica('default','VERSIONS LOADER','DONE!');										//notifica terminazione
+					}
+				}
+			}
+			/*-----*/
+			//OTTENGO LE VERSIONI INSTALLATE
+			async function ottieniVersioniInstallate(){
+
+				try{
+					//CARICO FILE DA GITHUB E MOSTRO VERSIONI INSTALLATE
+					if(isAuthenticated){
+						response = await axios.get(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${HASH}/${FILE_PATH}`);
+					}else{		//not authenticated -> no TOKEN
+						response = await axios.get(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${HASH}/${FILE_PATH}`);
+					}
+					JSONversioniInstallate = response.data;																//ottengo i dati del json da github
+					
+					JSONversioniInstallate.forEach(function(APPLICAZIONE) {		//per ogni APP mostro la versione in span con id: Autore/NomeApp_InstalledVersion
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).html(APPLICAZIONE.Versione);	//scrivo versione
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'black');			//imposto colore nero
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_label`).css('color', 'black');						//anche testo nel menu visibilità
+						$(`#${APPLICAZIONE.id.replace(/\//g, '\\/')}_PulsanteAggiornamento`).css('display', 'block');	//visualizza il pulsante aggiornamento
+					});
+				}catch(error){
+					var testo = "Cannot get INSTALLED VERSIONS - " + error.code + ": " + error.message;
+					aggiungiNotifica('warning','GENERIC ERROR',testo);													//notifica errore
+					console.log(error);
+				}
+			}
+			/*-----*/
+			//OTTENGO LE ULTIME VERSIONI
+			async function ottieniUltimeVersioni(){
+
+				try{
+					//CARICO ULTIME VERSIONI DA GITHUB E CHIAMO IL CONFRONTO
+					
+					if(!isAuthenticated){	//se non autenticato non carico le versioni: troppo costoso in termini di token
+						aggiungiNotifica('warning','Unauthenticated Mode','Loading the latest versions is API-expensive. Set your token up first!');
+						return;
+					}
+					
+					var Applicazioni = document.getElementsByClassName("RigaApp"); 	// Seleziona tutti gli elementi con la classe "RigaApp"
+					for(let i = 0; i < Applicazioni.length; i++){		//per ogni applicazione
+						var idAPP = Applicazioni[i].id;					//prendo l'ID dell'app
+						
+						if(idAPP !== "NintendoHOSVersion"){				//se non è NintendoHOSVersion, allora la versione è da prendere da github
+							try{
+								//PRENDE INFORMAZIONI SUL REPO CON CHIAMATA API A GITHUB
+								response = await axios.get(`https://api.github.com/repos/${idAPP}/releases/latest`, 	//non ho la versione senza token, gestisco il caso prima del ciclo (senza token non carico le ultime versioni)
+									{
+									headers:{
+										'Authorization': `Bearer ${API_TOKEN}`
+									}
+								});
+								var ultimaVersione = response.data.tag_name;									//prendo l'ultima versione rilasciata
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersione);		//scrivo versione
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');		//imposto colore nero
+							}catch(error){
+								var testo = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
+								aggiungiNotifica('warning',idAPP,testo);											//notifica errore
+								console.log(error);
+							}
+						}else{											//se è NintendoHOSVersion, allora la versione è da prendere da un sito diverso
+							/*	https://api.allorigins.win/raw?url=				ok ma html
+							https://api.codetabs.com/v1/proxy?quest=   			ok ma html
+							https://cors-get-proxy.sirjosh.workers.dev/?url=	ok ma html
+							https://secret-ocean-49799.herokuapp.com/			no
+							https://cors.eu.org/								si	-flag Non sicuro
+							https://cors-proxy.tk/?url=							no
+							https://jsonp.afeld.me/								no
+							https://corsanywhere.herokuapp.com/					no
+							https://fast-dawn-89938.herokuapp.com/				no
+							https://cors-proxy.fringe.zone/						si
+							*/
+							try{
+								//PRENDE INFORMAZIONI DA https://yls8.mtheall.com/ninupdates
+								response = await axios.get(`https://cors.eu.org/https://yls8.mtheall.com/ninupdates/titlelist.php?sys=hac&csv=1&reg=G&tid=0100000000000816`);
+								var ultimaVersioneFirmware = response.data.split(" ").pop().trim();	//ottengo l'ultima versione prendendola dall'ultimo elemento del file, a cui tolgo eventuali spazi alla fine/inizio
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).html(ultimaVersioneFirmware);	//scrivo versione
+								$(`#${idAPP.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'black');			//imposto colore nero
+							}catch(error){
+								var testo = "Cannot get LATEST VERSION - " + error.code + ": " + error.message;
+								aggiungiNotifica('warning',idAPP,testo);												//notifica errore
+								console.log(error);
+							}
+						}
+						//CHIAMO CONFRONTO TRA VERSIONI
+						confrontaVersioni(idAPP);
+					}
+				}catch(error){
+					var testo = "Cannot get LATEST VERSIONS - " + error.code + ": " + error.message;
+					aggiungiNotifica('error','GENERIC ERROR',testo);													//notifica errore
+					console.log(error);
+				}
+			}
+			/*-----*/
+			//CONFRONTO LE VERSIONI
+			async function confrontaVersioni(APPLICAZIONE){
+				const vettoreCasiParticolari= ['J-D-K/JKSV', 'F-l-a/NXUpdateTracker'];		//contiene applicazioni che non sono direttamente confrontabili
+				
+				try{
+					//LEGGE VERSIONI E CONFRONTA
+					var ultimaVersione = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).text();			//prendo ultima versione dal campo
+					var versioneInstallata = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).text();	//prendo versione installata dal campo
+				
+					//effettuo operazioni preliminari nel caso di casi particolari
+					if (vettoreCasiParticolari.includes(APPLICAZIONE) === true){
+						if (APPLICAZIONE === 'J-D-K/JKSV'){		//data in formato gg/mm/aaaa
+							
+							//converto la data nel numero di giorni. prima per l'ultima versione, poi per quella installata
+							ultimaVersione = ultimaVersione.replaceAll('.', '/').split('/');	//trasformo i punti in barre per uniformare le date - versioni, poi splitto sulla barra
+							ultimaVersione = parseInt(ultimaVersione[0]) + parseInt(ultimaVersione[1])*30 + parseInt(ultimaVersione[2])*365;	//calcolo il numero di giorni complessivo
+
+							versioneInstallata = versioneInstallata.replaceAll('.', '/').split('/');
+							versioneInstallata = parseInt(versioneInstallata[0]) + parseInt(versioneInstallata[1])*30 + parseInt(versioneInstallata[2])*365;
+						}else if(APPLICAZIONE === 'F-l-a/NXUpdateTracker'){	//devo mostrare messaggio
+							if(APP_VERSION < ultimaVersione){				//se c'è una nuova versione
+								document.getElementById('F-l-a/NXUpdateTracker_InstalledVersion').style.display = "none";
+								document.getElementById('MessaggioAutore').style.display = "none";
+								document.getElementById('messaggioNuovaVersione').style.display = "block";
+							}
+						}
+					}
+					//confronto e coloro
+					if (versioneInstallata < ultimaVersione){												//se la versione installata è vecchia
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'red');		//allora testo installata di colore rosso
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_label`).css('color', 'red');					//anche testo nel menu visibilità
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).removeClass("AppAggiornata");				//tolgo la classe aggiornata alla riga app
+					}else if (versioneInstallata > ultimaVersione) {										//se la versione installata è nuova
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'red');			//allora testo ultima di colore rosso
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_label`).css('color', 'red');					//anche testo nel menu visibilità
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).removeClass("AppAggiornata");				//tolgo la classe aggiornata alla riga app
+					}else{																					//se la versione è la stessa
+						$(`#${APPLICAZIONE.replace(/\//g, '\\/')}`).addClass("AppAggiornata");					//aggiungo la classe aggiornata alla riga app
+					}
+				}catch(error){
+					var testo = "Cannot COMPARE VERSIONS - " + error.code + ": " + error.message;
+					aggiungiNotifica('error',APPLICAZIONE,testo);											//notifica errore
+					console.log(error);
+					
+					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).css('color', 'green');		//coloro di verde se errore
+					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'green');
+					$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_label`).css('color', 'green');				//anche testo nel menu visibilità
+				}
+			}
+		/*GESTISCE CARICAMENTO DATI - fine*/
+	/*MODULO DOWNLOAD VERSIONI - fine*/
+	
+	/*-----*/
+	
+	/*MODULO UPLOAD VERSIONI - inizio*/
 		/*GESTISCE AGGIORNAMENTO VERSIONI - inizio*/
 			//APRE FORM PER L'AGGIORNAMENTO
 			async function apriFinestraVersioni(APPLICAZIONE, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					await ottieniUltimoHash();						//ottiene ultimo hash		//da eliminare in caso di errori, per togliere async da apriFinestraVersioni
+				if(evento === undefined || evento.key === "Enter"){	//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
 					
 					//prende le versioni mostrate, per visualizzarle
 					var ultimaVersione = $(`#${APPLICAZIONE.replace(/\//g, '\\/')}_LatestVersion`).text();	//prendo ultima versione dal campo
@@ -2152,6 +2758,7 @@
 							//mostro la versione modificata e confronto le versioni
 							$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).html(nuovaVersione);
 							$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_InstalledVersion`).css('color', 'black');
+							$(`#${APPLICAZIONE.replace(/\//g, '\\/')}_label`).css('color', 'black');
 							confrontaVersioni(APPLICAZIONE);
 						})
 						.catch(function(error){
@@ -2172,170 +2779,9 @@
 				});
 			}
 		/*GESTISCE AGGIORNAMENTO VERSIONI - fine*/
-		
-		/*GESTISCE LE TABELLE DETTAGLI - inizio*/
-			//MOSTRA-NASCONDE I DETTAGLI DELL'APPLICAZIONE RICEVUTA TRA I PARAMETRI
-			function mostraDettagli(applicazione, evento) {
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					var nomeElemento = applicazione + '_TabellaDettagli';
-					elemento = document.getElementById(nomeElemento);
-					if (elemento.style.display === "block") {		//se erano visibili
-						elemento.style.display = "none";			//allora li nasconde
-					} else {
-						elemento.style.display = "block";			//altrimenti li visualizza
-					}
-				}
-			}
-			/*-----*/
-			//MOSTRA-NASCONDE I DETTAGLI PER LA CONFIGURAZIONE CUSTOM DI TUTTI GLI ELEMENTI, A SECONDA DELL'ICONA PREMUTA (+ o -)
-			function mostraTutti(iconaPremuta, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					var vettoreTabelleDettagli = document.getElementsByClassName("tabellaDettagli");	//ottengo vettore degli elementi che contengono i dettagli
-					for (var i = 0; i < vettoreTabelleDettagli.length; i++) {							//per ogni tabella dei dettagli
-						if (iconaPremuta === "ExpandIconButton") {										//controlla quale azione eseguire. se deve espandere
-							vettoreTabelleDettagli[i].style.display = "block";							// visualizza la tabella
-						} else {
-							vettoreTabelleDettagli[i].style.display = "none";							//altrimenti la nasconde
-						}
-					}
-					if (iconaPremuta === "ExpandIconButton") {											//infine cambia lo stato del pulsante cambiando l'id e l'alt
-						document.getElementById(iconaPremuta).id = 'CollapseIconButton';
-						document.getElementById("ExpandIconButtonImage").id = 'CollapseIconButtonImage';
-						document.getElementById("CollapseIconButtonImage").alt = "Collapse All";
-					} else {
-						document.getElementById(iconaPremuta).id = 'ExpandIconButton';
-						document.getElementById("CollapseIconButtonImage").id = 'ExpandIconButtonImage';
-						document.getElementById("ExpandIconButtonImage").alt = "Expand All";
-					}
-				}
-			}
-			/*-----*/
-			//MOSTRA-NASCONDE LA TABELLA DEI PAYLOADS
-			function mostraPayloads(pulsantePremuto, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					mostraDettagli('dettagliPayloads');						//cambia lo stato della tabella
-					if (pulsantePremuto === "MostraDettagliPayloads") {		//controlla quale azione è stata eseguita. aggiorna la scritta cambiando l'id
-						document.getElementById(pulsantePremuto).innerHTML = "&and; HIDE PAYLOADS &and;";
-						document.getElementById(pulsantePremuto).id = 'NascondiDettagliPayloads';
-					} else {
-						document.getElementById(pulsantePremuto).innerHTML = "&or; SHOW PAYLOADS &or;";
-						document.getElementById(pulsantePremuto).id = 'MostraDettagliPayloads';
-					}
-				}
-			}
-		/*GESTISCE LE TABELLE DETTAGLI - fine*/
-
-		/*GESTISCE L'APERTURA DELLE PAGINE DA IMMAGINE - inizio*/
-			function apriPagina(url, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					window.open(url);
-				}
-			}
-		/*GESTISCE L'APERTURA DELLE PAGINE DA IMMAGINE - fine*/
-		
-		/*GESTISCE LA VISIBILITÀ DELLE APP AGGIORNATE - inizio*/
-			//MOSTRA/NASCONDE LE APP AGGIORNATE
-			function toggleAppAggiornate(iconaPremuta, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					const vettoreAppParticolari =	{"exelix11/SysDVR": ["Hartie95/sysdvr-overlay"],"masagrator/ReverseNX-RT": ["masagrator/ReverseNX-Tool"],"masagrator/Status-Monitor-Overlay": ["masagrator/NX-FPS"],"masagrator/SaltyNX": ["masagrator/SaltyNX-Tool"]};	//vettore delle righe che contengono altre app
-					//GESTISCO LE APP AGGIORNATE
-					var vettoreAppAggiornate = document.getElementsByClassName("AppAggiornata");	//ottengo vettore delle app aggiornate
-					for (var i = 0; i < vettoreAppAggiornate.length; i++) {							//per ogni app aggiornata
-						if(vettoreAppAggiornate[i].id !== 'F-l-a/NXUpdateTracker' && (Object.keys(vettoreAppParticolari).includes(vettoreAppAggiornate[i].id)===false || appContenuteAggiornate(vettoreAppParticolari[vettoreAppAggiornate[i].id]))){	//non faccio nulla se è 'F-l-a/NXUpdateTracker'
-							if (iconaPremuta === "ShowSameVersionButton") {							//controlla quale azione eseguire. se deve mostrare
-								vettoreAppAggiornate[i].removeAttribute("hidden");					// visualizza la app
-							}else{
-								vettoreAppAggiornate[i].setAttribute("hidden", "true");
-							}
-						}
-					}
-					//GESTISCO LE APP SENZA VERSIONE
-					const vettoreAppSenzaVersione= ['NoID', 'NoID1', 'NoID2', 'NoID3', 'blawar/tinfoil'];		//contiene applicazioni che non hanno una versione propria
-					for(var i=0; i<vettoreAppSenzaVersione.length; i++){							//per ogni app senza versione
-						if (iconaPremuta === "ShowSameVersionButton") {								//controlla quale azione eseguire. se deve mostrare
-							document.getElementById(vettoreAppSenzaVersione[i]).removeAttribute("hidden");	// visualizza la app
-						} else {
-							document.getElementById(vettoreAppSenzaVersione[i]).setAttribute("hidden", "true");	//altrimenti la nasconde
-						}
-					}
-					//CAMBIO IL PULSANTE
-					if (iconaPremuta === "ShowSameVersionButton") {					//infine cambia lo stato del pulsante cambiando l'id e l'alt
-						document.getElementById("ShowSameVersionButtonImage").alt = "Hide Updated Apps";			//cambio l'alt dell'icona
-						document.getElementById("ShowSameVersionButtonImage").id = 'HideSameVersionButtonImage';	//cambio l'icona
-						document.getElementById(iconaPremuta).id = 'HideSameVersionButton';							//cambio l'id del pulsante
-					} else {
-						document.getElementById("HideSameVersionButtonImage").alt = "Show Updated Apps";			//cambio l'alt dell'icona
-						document.getElementById("HideSameVersionButtonImage").id = 'ShowSameVersionButtonImage';	//cambio l'icona
-						document.getElementById(iconaPremuta).id = 'ShowSameVersionButton';							//cambio l'id del pulsante
-					}
-				}
-			}
-			/*-----*/
-			//CONTROLLA SE LE APP CONTENUTE SONO AGGIORNATE
-			function appContenuteAggiornate(vettoreAppContenute){							//prendo le app contenute
-				for(var i=0; i<vettoreAppContenute.length; i++){							//per ogni app
-					const elemento = document.getElementById(vettoreAppContenute[i]);		//prende l'elemento html (la riga)
-					if (!elemento.classList.contains("AppAggiornata")){						//se non è aggiornata
-						return false;														//non nascondo la app contenente. ritorno falso
-					}
-				}
-				return true;																//altrimenti alla fine ritorno vero
-			}
-		/*GESTISCE LA VISIBILITÀ DELLE APP AGGIORNATE - fine*/
-		
-		/*GESTISCE LE NOTIFICHE - inizio*/
-			//GESTISCE CONFIGURAZIONE PANNELLO
-			try{
-				var polipop = new Polipop('mypolipop', {
-					appendTo: 'body', 			//elemento a cui è ancorato
-					layout: 'panel',			//tipologia: panel/popups
-					theme: 'compact',			//tema: default/minimal/compact
-					position: 'bottom-right',	//posizione del pannello
-					icons: true,				//segna se vengono visualizzate le icone nelle notifiche
-					insert: 'after',			//dove vengono inserite le nuove notifiche: before/after
-					spacing: 10,				//spazio tra le notifiche
-					pool: 5,					//quante notifiche possono esserci visualizzate
-					sticky: true,				//se le notifiche non hanno il timer
-					progressbar: true,			//visualizza il timer
-					life: 3000,					//durata timer in ms
-					pauseOnHover: true,			//ferma il timer se passo col mouse
-					headerText: 'Notifications',	//nome pannello
-					closer: true,				//segna se il pulsante per chiudere viene mostrato
-					closeText: 'Close',		//testo pulsante per chiudere il pannello
-					loadMoreText:'Next page',//testo pulsante per scorrere la coda
-					hideEmpty: false,			//segna se nascondere il pannello se vuoto
-					interval: 250,				//tempo tra un polling e l'altro per nuove notifiche in ms
-					effect: 'fade',				//tipo di effetto: fade/slide
-					easing: 'ease-in',			//tipo di animazione 'linear''ease''ease-in''ease-out''ease-in-out''cubic-bezier' value
-					effectDuration: 250			//numero di ms durata animazione
-				});
-				polipop.enable();
-			}catch(error){
-				console.log(error);									//stampa errore
-				if(polipop === undefined){
-					alert("Unable to create the Notification Pane.\nPlease refresh the page and check your internet connection!");
-				}
-			}
-			/*-----*/
-			//AGGIUNGE UNA NOTIFICA AL PANNELLO DELLE NOTIFICHE
-			function aggiungiNotifica(tipoNotifica, titoloNotifica, contenutoNotifica, evento){
-				if(evento === undefined || evento.key === "Enter"){		//la condizione è controllata da SX a DX. prima controllo se è definito, poi controllo la key
-					polipop.add({
-						content: contenutoNotifica,
-						title: titoloNotifica,
-						type: tipoNotifica			//default, info, success, warning, error
-					});
-					
-					/*example:
-					polipop.add({
-						type: 'success',
-						title: 'Message',
-						content: 'This is the message content.'
-					});
-					*/
-				}
-			}
-		/*GESTISCE LE NOTIFICHE - fine*/
+	/*MODULO UPLOAD VERSIONI - fine*/
 		</script>
+		
+		
 	</body>
 </html>
