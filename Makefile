@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	NXUpdateTracker
 APP_AUTHOR	:=	F-l-a
-APP_VERSION	:=	v1.0
+APP_VERSION	:=	v2.0
 TARGET		:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR		:=	out
 BUILD		:=	build
